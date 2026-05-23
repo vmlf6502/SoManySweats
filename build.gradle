@@ -1,16 +1,25 @@
+repositories {
+    maven { url "https://maven.notenoughupdates.org/releases/" }
+}
+
 buildscript {
     repositories {
+        gradlePluginPortal()  // add this
+        mavenCentral()
         jcenter()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
+        maven { url "https://maven.notenoughupdates.org/releases/" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:7.1.2'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -25,23 +34,38 @@ minecraft {
     mappings = "stable_22"
 }
 
+configurations {
+    shadowModImpl
+    compile.extendsFrom shadowModImpl  // use compile, not modImplementation
+}
+
 dependencies {
     compile files('ReplayMod-v1_8-2.6.14.jar')
     compile 'org.projectlombok:lombok:1.18.20'
 
     implementation "com.google.code.gson:gson:2.8.5"
     implementation "org.json:json:20240303"
+
+    shadowModImpl "org.notenoughupdates.moulconfig:legacy:4.6.0"
+}
+
+tasks.shadowJar {
+    configurations = [project.configurations.shadowModImpl]
+    relocate "io.github.notenoughupdates.moulconfig", "com.replaymod.deps.moulconfig"
+    classifier = 'shadow-only'  // prevent it from being the "main" jar
 }
 
 jar {
+    dependsOn shadowJar
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes 'TweakClass': 'com.replaymod.core.tweaker.ReplayModTweaker',
-                   'TweakOrder': '0',
-                   'FMLCorePluginContainsFMLMod': 'true',
-                   'FMLCorePlugin': 'com.replaymod.core.LoadingPlugin',
-                   'FMLAT': 'replaymod_at.cfg'
+                'TweakOrder': '0',
+                'FMLCorePluginContainsFMLMod': 'true',
+                'FMLCorePlugin': 'com.replaymod.core.LoadingPlugin',
+                'FMLAT': 'replaymod_at.cfg'
     }
+    from zipTree(shadowJar.archivePath)
 }
 
 compileJava.doLast {

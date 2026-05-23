@@ -19,6 +19,8 @@ import com.replaymod.core.mixin.MinecraftAccessor;
 import com.replaymod.core.versions.MCVer;
 import com.replaymod.core.versions.forge.EventsAdapter;
 import java.util.List;
+
+import com.replaymod.sms.SoManySweats;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
@@ -41,13 +43,16 @@ public class ReplayModBackend {
         SettingsRegistry settingsRegistry = this.mod.getSettingsRegistry();
         settingsRegistry.backend.setConfiguration(config);
         settingsRegistry.save();
+
+        SoManySweats.INSTANCE.preinit(event);
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         this.mod.initModules();
         this.eventsAdapter.register();
-        System.out.println("but then i had a brilliant idea i used f5");
+
+        SoManySweats.INSTANCE.init();
     }
 
     public String getVersion() {
