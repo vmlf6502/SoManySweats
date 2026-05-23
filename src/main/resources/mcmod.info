@@ -1,0 +1,16 @@
+[
+{
+  "modid": "somanysweats",
+  "name": "SoManySweats",
+  "description": "In-game Hypixel stats viewer.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["vmlf"],
+  "credits": "Replay Mod, for making this Lunar Client mod possible.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

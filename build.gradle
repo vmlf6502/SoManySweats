@@ -1,0 +1,55 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+version = "1.8.9-2.6.14"
+group = "com.replaymod"
+archivesBaseName = "ReplayMod-v1_8"
+
+minecraft {
+    version = "1.8.9-11.15.1.2318-1.8.9"
+    runDir = "run"
+    mappings = "stable_22"
+}
+
+dependencies {
+    compile files('ReplayMod-v1_8-2.6.14.jar')
+    compile 'org.projectlombok:lombok:1.18.20'
+
+    implementation "com.google.code.gson:gson:2.8.5"
+    implementation "org.json:json:20240303"
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes 'TweakClass': 'com.replaymod.core.tweaker.ReplayModTweaker',
+                   'TweakOrder': '0',
+                   'FMLCorePluginContainsFMLMod': 'true',
+                   'FMLCorePlugin': 'com.replaymod.core.LoadingPlugin',
+                   'FMLAT': 'replaymod_at.cfg'
+    }
+}
+
+compileJava.doLast {
+    copy {
+        from zipTree('ReplayMod-v1_8-2.6.14.jar')
+//        include 'com/replaymod/**/*.class'
+        exclude 'com/replaymod/core/ReplayModBackend.class'
+        into sourceSets.main.output.classesDir
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
+}
