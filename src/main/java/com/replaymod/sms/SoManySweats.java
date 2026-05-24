@@ -70,6 +70,5 @@ public class SoManySweats {
 		MinecraftForge.EVENT_BUS.register(new RenderStats());
 		MinecraftForge.EVENT_BUS.register(new TriggerOpenConfig());
 		MinecraftForge.EVENT_BUS.register(new KeyboardFix());
-		GuiTextures.setTextureRoot(new MyResourceLocation("somanysweats", "core"));
 	}
 }
