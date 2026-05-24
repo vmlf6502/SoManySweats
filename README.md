@@ -70,7 +70,7 @@ If the stats in tab aren't perfectly aligned in nice, neat columns, here are som
 
 ## How It Works
 Lunar Client has this handy feature that allows you to override third-party mods that it uses.
-As it happens, Lunar Client uses a popular third party open-source mod called [ReplayMod](https://github.com/NotEnoughUpdates/NotEnoughUpdates) (go check them out btw).
+As it happens, Lunar Client uses a popular third party open-source mod called [ReplayMod](https://github.com/ReplayMod/ReplayMod) (go check them out btw).
 So, we can modify ReplayMod as much as we want (as long as it still contains all the classes of the original ReplayMod), and then override Lunar Client's version of SoManySweats with our own custom version.
 More information on this can be found at [this article](https://support.lunarclient.com/support/solutions/articles/60000752051-third-party-mods) on Lunar Client's website. Because this still
 works as a normal forge mod, you are able to use this with other clients such as Feather Client or Labymod.
@@ -78,7 +78,7 @@ Note: this is actually a partial decompilation of a 1.8.9 build of ReplayMod bec
 A 1.8.9 build of ReplayMod is included in the source, and the `ReplayModBackend` class is overridden as a way to hook into the Forge initialization process.
 
 ## Important Notice
-This project uses [ReplayMod](https://github.com/NotEnoughUpdates/NotEnoughUpdates) as a base in order to get its own code running inside Lunar Client.
+This project uses [ReplayMod](https://github.com/ReplayMod/ReplayMod) as a base in order to get its own code running inside Lunar Client.
 I do NOT own nor contribute to ReplayMod. All ReplayMod code is still licensed to them, and SoManySweats inherits the GPL-3.0 license from them.
 Their README can be found at `-README.md` in the root of this project.
 Huge thanks to ReplayMod for making this project possible.
