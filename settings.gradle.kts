@@ -9,4 +9,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "SoManySweats-ReplayMod"
+rootProject.name = "SoManySweats"

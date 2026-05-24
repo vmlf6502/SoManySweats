@@ -14,7 +14,7 @@ out
 .idea
 
 # vscode
-.vscode
+/.vscode/
 
 # gradle
 build
@@ -28,3 +28,4 @@ LICENSE-fml.txt
 MinecraftForge-License.txt
 Paulscode IBXM Library License.txt
 Paulscode SoundSystem CodecIBXM License.txt
+

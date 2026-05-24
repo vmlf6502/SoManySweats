@@ -1,7 +1,7 @@
 [
 {
-  "modid": "somanysweats-replaymod",
-  "name": "SoManySweats-ReplayMod",
+  "modid": "somanysweats",
+  "name": "SoManySweats",
   "description": "In-game Hypixel stats viewer.",
   "version": "${version}",
   "mcversion": "${mcversion}",
