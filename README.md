@@ -3,10 +3,12 @@
 
 SoManySweats is a Minecraft 1.8.9 Forge mod designed for Lunar Client that lets you view Hypixel Bedwars player stats directly in-game, via the tab list.
 
+<img width="1920" height="1080" alt="SoManySweats_showcase" src="https://github.com/user-attachments/assets/c8077c64-610f-43b0-aa6b-458f0931f57e" />
+
 ## Features
 - Displays stats of players in tab, making it easy to match stats with teams
 - Stats divided into organised columns on the tab list
-- Color coded stats for *every* prestige
+- Color coded stats for every prestige up to 5000 stars
 - Automatically fetches stats at the start of a Bedwars game
 
 ## Getting Started
