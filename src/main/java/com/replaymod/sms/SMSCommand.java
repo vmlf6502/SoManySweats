@@ -19,8 +19,10 @@
 
 package com.replaymod.sms;
 
+import com.replaymod.sms.events.TriggerOpenConfig;
 import com.replaymod.sms.util.ApiHandler;
 import com.replaymod.sms.util.Logger;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.EnumChatFormatting;
@@ -47,7 +49,7 @@ public class SMSCommand extends CommandBase {
 	public void processCommand(ICommandSender sender, String[] args) {
 		if (args == null) return;
 		if (args.length == 0 || args[0].equals("settings")) {
-			SoManySweats.openConfigGui();
+			TriggerOpenConfig.triggerConfig = true;
 		} else if (args[0].equals("fetch")) {
 			ApiHandler.fetchPlayerStats();
 			Logger.log(EnumChatFormatting.GREEN + "Successfully fetched stats!");
@@ -56,4 +58,6 @@ public class SMSCommand extends CommandBase {
 			Logger.log(EnumChatFormatting.GREEN + "Successfully cleared stats!");
 		}
 	}
+
+
 }

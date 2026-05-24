@@ -1,20 +1,20 @@
 /*
  * Copyright (C) 2026 vmlf
  *
- * This file is part of SoManySweats.
+ * This file is part of SoManySweats-ReplayMod.
  *
- * SoManySweats is free software: you can redistribute it
+ * SoManySweats-ReplayMod is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation, either
  * version 3 of the License, or (at your option) any later version.
  *
- * SoManySweats is distributed in the hope that it will be useful,
+ * SoManySweats-ReplayMod is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with SoManySweats. If not, see <https://www.gnu.org/licenses/>.
+ * along with SoManySweats-ReplayMod. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.replaymod.sms.util;
@@ -45,7 +45,7 @@ public class ApiHandler {
 	private static final String PROXY_API = "https://hypixel-proxy.rustacean64.workers.dev";
 
 	public static void fetchPlayerStats() {
-		if (Objects.equals(SoManySweats.INSTANCE.config.apiData.apiKey, "")) {
+		if (Objects.equals(SoManySweats.config.getInstance().apiData.apiKey, "")) {
 			Logger.log("No API key found.");
 			return;
 		}
@@ -73,8 +73,8 @@ public class ApiHandler {
 
 		try {
 			URL url;
-			if (SoManySweats.INSTANCE.config.apiData.developerMode) {
-				url = new URL(HYPIXEL_API + "?key=" + SoManySweats.INSTANCE.config.apiData.apiKey + "&uuid=" + uuid);
+			if (SoManySweats.config.getInstance().apiData.developerMode) {
+				url = new URL(HYPIXEL_API + "?key=" + SoManySweats.config.getInstance().apiData.apiKey + "&uuid=" + uuid);
 			} else {
 				url = new URL(PROXY_API + "/player?uuid=" + uuid);
 			}

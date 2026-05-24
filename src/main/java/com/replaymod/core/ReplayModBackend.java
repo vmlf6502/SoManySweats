@@ -1,27 +1,29 @@
 /*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  net.minecraft.client.resources.IResourcePack
- *  net.minecraftforge.common.config.Configuration
- *  net.minecraftforge.fml.common.Loader
- *  net.minecraftforge.fml.common.Mod
- *  net.minecraftforge.fml.common.Mod$EventHandler
- *  net.minecraftforge.fml.common.ModContainer
- *  net.minecraftforge.fml.common.event.FMLInitializationEvent
- *  net.minecraftforge.fml.common.event.FMLPreInitializationEvent
+ * Copyright (C) 2026 vmlf
+ *
+ * This file is part of SoManySweats-ReplayMod.
+ * Based on code from ReplayMod by ReplayMod contributors
+ * Original source: https://github.com/ReplayMod/ReplayMod
+ *
+ * SoManySweats-ReplayMod is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * SoManySweats-ReplayMod is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with SoManySweats-ReplayMod. If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.replaymod.core;
 
-import com.replaymod.core.ReplayMod;
-import com.replaymod.core.SettingsRegistry;
-import com.replaymod.core.mixin.MinecraftAccessor;
-import com.replaymod.core.versions.MCVer;
 import com.replaymod.core.versions.forge.EventsAdapter;
-import java.util.List;
 
 import com.replaymod.sms.SoManySweats;
-import net.minecraft.client.resources.IResourcePack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
