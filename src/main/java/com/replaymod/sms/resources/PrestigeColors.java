@@ -1,20 +1,20 @@
 /*
  * Copyright (C) 2026 vmlf
  *
- * This file is part of SoManySweats-ReplayMod.
+ * This file is part of SoManySweats.
  *
- * SoManySweats-ReplayMod is free software: you can redistribute it
+ * SoManySweats is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation, either
  * version 3 of the License, or (at your option) any later version.
  *
- * SoManySweats-ReplayMod is distributed in the hope that it will be useful,
+ * SoManySweats is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with SoManySweats-ReplayMod. If not, see <https://www.gnu.org/licenses/>.
+ * along with SoManySweats. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.replaymod.sms.resources;
@@ -40,57 +40,57 @@ import static net.minecraft.util.EnumChatFormatting.YELLOW;
 
 public class PrestigeColors {
 	private static final EnumChatFormatting[][] LIST = {
-		new EnumChatFormatting[]{GRAY},														 																											 // 0
+		new EnumChatFormatting[]{GRAY},														 							// 0
 			new EnumChatFormatting[]{WHITE},
 			new EnumChatFormatting[]{GOLD},
 			new EnumChatFormatting[]{AQUA},
 			new EnumChatFormatting[]{DARK_GREEN},
-		new EnumChatFormatting[]{DARK_AQUA},														 																								 // 5
+		new EnumChatFormatting[]{DARK_AQUA},														 					// 5
 			new EnumChatFormatting[]{DARK_RED},
 			new EnumChatFormatting[]{LIGHT_PURPLE},
 			new EnumChatFormatting[]{BLUE},
 			new EnumChatFormatting[]{DARK_PURPLE},
-		new EnumChatFormatting[]{RED, GOLD, YELLOW, GREEN, AQUA, LIGHT_PURPLE, DARK_PURPLE},														 // 10
+		new EnumChatFormatting[]{RED, GOLD, YELLOW, GREEN, AQUA, LIGHT_PURPLE, DARK_PURPLE},							// 10
 			new EnumChatFormatting[]{GRAY, WHITE, WHITE, WHITE, WHITE, GRAY, GRAY},
 			new EnumChatFormatting[]{GRAY, YELLOW, YELLOW, YELLOW, YELLOW, GOLD, GRAY},
 			new EnumChatFormatting[]{GRAY, AQUA, AQUA, AQUA, AQUA, DARK_AQUA, GRAY},
 			new EnumChatFormatting[]{GRAY, GREEN, GREEN, GREEN, GREEN, DARK_GREEN, GRAY},
-		new EnumChatFormatting[]{GRAY, DARK_AQUA, DARK_AQUA, DARK_AQUA, DARK_AQUA, BLUE, GRAY},														// 15
+		new EnumChatFormatting[]{GRAY, DARK_AQUA, DARK_AQUA, DARK_AQUA, DARK_AQUA, BLUE, GRAY},							// 15
 			new EnumChatFormatting[]{GRAY, RED, RED, RED, RED, DARK_RED, GRAY},
 			new EnumChatFormatting[]{GRAY, LIGHT_PURPLE, LIGHT_PURPLE, LIGHT_PURPLE, LIGHT_PURPLE, DARK_PURPLE, GRAY},
 			new EnumChatFormatting[]{GRAY, BLUE, BLUE, BLUE, BLUE, DARK_BLUE, GRAY},
 			new EnumChatFormatting[]{GRAY, DARK_PURPLE, DARK_PURPLE, DARK_PURPLE, DARK_PURPLE, DARK_GRAY, GRAY},
-		new EnumChatFormatting[]{DARK_GRAY, GRAY, WHITE, WHITE, GRAY, GRAY, DARK_GRAY},														 				// 20
+		new EnumChatFormatting[]{DARK_GRAY, GRAY, WHITE, WHITE, GRAY, GRAY, DARK_GRAY},									// 20
 			new EnumChatFormatting[]{WHITE, WHITE, YELLOW, YELLOW, GOLD, GOLD, GOLD},
 			new EnumChatFormatting[]{GOLD, GOLD, WHITE, WHITE, AQUA, DARK_AQUA, DARK_AQUA},
 			new EnumChatFormatting[]{DARK_PURPLE, DARK_PURPLE, LIGHT_PURPLE, LIGHT_PURPLE, GOLD, YELLOW, YELLOW},
 			new EnumChatFormatting[]{AQUA, AQUA, WHITE, WHITE, GRAY, GRAY, DARK_GRAY},
-		new EnumChatFormatting[]{WHITE, WHITE, GREEN, GREEN, DARK_GREEN, DARK_GREEN, DARK_GREEN},													// 25
+		new EnumChatFormatting[]{WHITE, WHITE, GREEN, GREEN, DARK_GREEN, DARK_GREEN, DARK_GREEN},						// 25
 			new EnumChatFormatting[]{DARK_RED, DARK_RED, RED, RED, LIGHT_PURPLE, LIGHT_PURPLE, DARK_PURPLE},
 			new EnumChatFormatting[]{YELLOW, YELLOW, WHITE, WHITE, DARK_GRAY, DARK_GRAY, DARK_GRAY},
 			new EnumChatFormatting[]{GREEN, GREEN, DARK_GREEN, DARK_GREEN, GOLD, GOLD, YELLOW},
 			new EnumChatFormatting[]{AQUA, AQUA, DARK_AQUA, DARK_AQUA, BLUE, BLUE, DARK_BLUE},
-		new EnumChatFormatting[]{YELLOW, YELLOW, GOLD, GOLD, RED, RED, DARK_RED},														 							// 30
+		new EnumChatFormatting[]{YELLOW, YELLOW, GOLD, GOLD, RED, RED, DARK_RED},										// 30
 			new EnumChatFormatting[]{BLUE, BLUE, DARK_AQUA, DARK_AQUA, GOLD, GOLD, YELLOW},
 			new EnumChatFormatting[]{RED, DARK_RED, GRAY, GRAY, DARK_RED, RED, RED},
 			new EnumChatFormatting[]{BLUE, BLUE, BLUE, LIGHT_PURPLE, RED, RED, DARK_RED},
 			new EnumChatFormatting[]{DARK_GREEN, GREEN, LIGHT_PURPLE, LIGHT_PURPLE, DARK_PURPLE, DARK_PURPLE, DARK_GREEN},
-		new EnumChatFormatting[]{RED, RED, DARK_RED, DARK_RED, DARK_GREEN, GREEN, GREEN},														 			// 35
+		new EnumChatFormatting[]{RED, RED, DARK_RED, DARK_RED, DARK_GREEN, GREEN, GREEN},								// 35
 			new EnumChatFormatting[]{GREEN, GREEN, GREEN, AQUA, BLUE, BLUE, DARK_BLUE},
 			new EnumChatFormatting[]{DARK_RED, DARK_RED, RED, RED, AQUA, DARK_AQUA, DARK_AQUA},
 			new EnumChatFormatting[]{DARK_BLUE, DARK_BLUE, BLUE, DARK_PURPLE, DARK_PURPLE, LIGHT_PURPLE, DARK_BLUE},
 			new EnumChatFormatting[]{RED, RED, GREEN, GREEN, DARK_AQUA, BLUE, BLUE},
-		new EnumChatFormatting[]{DARK_PURPLE, DARK_PURPLE, RED, RED, GOLD, GOLD, YELLOW},														 			// 40
+		new EnumChatFormatting[]{DARK_PURPLE, DARK_PURPLE, RED, RED, GOLD, GOLD, YELLOW},								// 40
 			new EnumChatFormatting[]{YELLOW, YELLOW, GOLD, RED, LIGHT_PURPLE, LIGHT_PURPLE, DARK_PURPLE},
 			new EnumChatFormatting[]{DARK_BLUE, BLUE, DARK_AQUA, AQUA, WHITE, GRAY, GRAY},
 			new EnumChatFormatting[]{BLACK, DARK_PURPLE, DARK_GRAY, DARK_GRAY, DARK_PURPLE, DARK_PURPLE, BLACK},
 			new EnumChatFormatting[]{DARK_GREEN, DARK_GREEN, DARK_GREEN, YELLOW, GOLD, DARK_PURPLE, LIGHT_PURPLE},
-		new EnumChatFormatting[]{WHITE, WHITE, AQUA, AQUA, DARK_AQUA, DARK_AQUA, DARK_AQUA},														 	// 45
+		new EnumChatFormatting[]{WHITE, WHITE, AQUA, AQUA, DARK_AQUA, DARK_AQUA, DARK_AQUA},							// 45
 			new EnumChatFormatting[]{DARK_AQUA, AQUA, YELLOW, YELLOW, GOLD, LIGHT_PURPLE, DARK_PURPLE},
 			new EnumChatFormatting[]{WHITE, DARK_RED, RED, RED, BLUE, DARK_BLUE, BLUE},
 			new EnumChatFormatting[]{DARK_PURPLE, DARK_PURPLE, RED, GOLD, YELLOW, AQUA, DARK_AQUA},
 			new EnumChatFormatting[]{DARK_GREEN, GREEN, WHITE, WHITE, GREEN, GREEN, DARK_GREEN},
-		new EnumChatFormatting[]{DARK_RED, DARK_RED, DARK_PURPLE, BLUE, BLUE, DARK_BLUE, BLACK}														 // 50
+		new EnumChatFormatting[]{DARK_RED, DARK_RED, DARK_PURPLE, BLUE, BLUE, DARK_BLUE, BLACK}							// 50
 	};
 
 	public static String addColors(String tag, int prestige) {
