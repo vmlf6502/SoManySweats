@@ -24,8 +24,6 @@ import com.replaymod.sms.events.BedwarsGameStart;
 import com.replaymod.sms.events.RenderStats;
 import com.replaymod.sms.events.TriggerOpenConfig;
 import com.replaymod.sms.extras.KeyboardFix;
-import io.github.notenoughupdates.moulconfig.GuiTextures;
-import io.github.notenoughupdates.moulconfig.common.MyResourceLocation;
 import io.github.notenoughupdates.moulconfig.managed.ManagedConfig;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -42,13 +40,6 @@ public class SoManySweats {
 
 	private File smsDir;
 	public static ManagedConfig<SMSConfig> config;
-
-	public static boolean showLevel = true;
-	public static boolean showFkdr = true;
-	public static boolean showWinstreak = true;
-	public static boolean showFinals;
-	public static boolean showWins;
-	public static boolean showBeds;
 
 	private SoManySweats() {}
 

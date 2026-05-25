@@ -16,7 +16,7 @@ java {
 }
 
 loom {
-    log4jConfigs.from(file("log4j2.xml"))
+//    log4jConfigs.from(file("log4j2.xml"))
     launchConfigs {
         "client" {
             arg("--tweakClass", "com.replaymod.core.tweaker.ReplayModTweaker")
@@ -48,6 +48,10 @@ repositories {
 
 val shadowImpl: Configuration by configurations.creating {
     configurations.implementation.get().extendsFrom(this)
+}
+
+val devEnv by configurations.creating {
+    configurations.runtimeClasspath.get().extendsFrom(this)
 }
 
 dependencies {

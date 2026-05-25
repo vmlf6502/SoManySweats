@@ -22,7 +22,6 @@ package com.replaymod.sms;
 import com.replaymod.sms.events.TriggerOpenConfig;
 import com.replaymod.sms.util.ApiHandler;
 import com.replaymod.sms.util.Logger;
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.EnumChatFormatting;

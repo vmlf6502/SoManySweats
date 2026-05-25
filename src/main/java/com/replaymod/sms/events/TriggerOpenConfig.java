@@ -20,16 +20,10 @@
 package com.replaymod.sms.events;
 
 import com.replaymod.sms.SoManySweats;
-import com.replaymod.sms.config.SMSConfig;
-import com.replaymod.sms.util.Logger;
-import io.github.notenoughupdates.moulconfig.common.IMinecraft;
 import io.github.notenoughupdates.moulconfig.gui.GuiScreenElementWrapper;
-import io.github.notenoughupdates.moulconfig.gui.MoulConfigEditor;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import static com.replaymod.sms.SoManySweats.config;
 
 public class TriggerOpenConfig {
     public static boolean triggerConfig = false;

@@ -21,22 +21,7 @@ package com.replaymod.sms.resources;
 
 import net.minecraft.util.EnumChatFormatting;
 
-import static net.minecraft.util.EnumChatFormatting.AQUA;
-import static net.minecraft.util.EnumChatFormatting.BLACK;
-import static net.minecraft.util.EnumChatFormatting.BLUE;
-import static net.minecraft.util.EnumChatFormatting.DARK_AQUA;
-import static net.minecraft.util.EnumChatFormatting.DARK_BLUE;
-import static net.minecraft.util.EnumChatFormatting.DARK_GRAY;
-import static net.minecraft.util.EnumChatFormatting.DARK_GREEN;
-import static net.minecraft.util.EnumChatFormatting.DARK_PURPLE;
-import static net.minecraft.util.EnumChatFormatting.DARK_RED;
-import static net.minecraft.util.EnumChatFormatting.GOLD;
-import static net.minecraft.util.EnumChatFormatting.GRAY;
-import static net.minecraft.util.EnumChatFormatting.GREEN;
-import static net.minecraft.util.EnumChatFormatting.LIGHT_PURPLE;
-import static net.minecraft.util.EnumChatFormatting.RED;
-import static net.minecraft.util.EnumChatFormatting.WHITE;
-import static net.minecraft.util.EnumChatFormatting.YELLOW;
+import static net.minecraft.util.EnumChatFormatting.*;
 
 public class PrestigeColors {
 	private static final EnumChatFormatting[][] LIST = {

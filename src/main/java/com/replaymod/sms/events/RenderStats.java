@@ -31,8 +31,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.replaymod.sms.SoManySweats.STATS;
+import static com.replaymod.sms.SoManySweats.config;
 
 public class RenderStats {
     @SubscribeEvent
@@ -47,8 +49,15 @@ public class RenderStats {
             names.add(name);
         }
 
-        String[] statsToGet = {"level", "fkdr", "winstreak"};
-        for (String stat : statsToGet) {
+
+        ArrayList<String> statsShown = new ArrayList<>();
+        if (config.getInstance().statsSettings.showLevel) { statsShown.add("level"); }
+        if (config.getInstance().statsSettings.showFkdr) { statsShown.add("fkdr"); }
+        if (config.getInstance().statsSettings.showWinstreak) { statsShown.add("winstreak"); }
+        if (!Objects.equals(config.getInstance().statsSettings.custom1, "")) { statsShown.add("custom1"); }
+        if (!Objects.equals(config.getInstance().statsSettings.custom2, "")) { statsShown.add("custom2"); }
+        if (!Objects.equals(config.getInstance().statsSettings.custom3, "")) { statsShown.add("custom3"); }
+        for (String stat : statsShown) {
             Aligner.fillNames(names);
             for (int i = 0; i < players.size(); i++) {
                 String uuid = players.get(i).getGameProfile().getId().toString();

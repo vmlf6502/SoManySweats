@@ -19,7 +19,6 @@
 
 package com.replaymod.sms.util;
 
-import com.replaymod.sms.SoManySweats;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.ChatComponentText;
@@ -39,13 +38,14 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.replaymod.sms.SoManySweats.STATS;
+import static com.replaymod.sms.SoManySweats.config;
 
 public class ApiHandler {
 	private static final String HYPIXEL_API = "https://api.hypixel.net/v2/player";
 	private static final String PROXY_API = "https://hypixel-proxy.rustacean64.workers.dev";
 
 	public static void fetchPlayerStats() {
-		if (Objects.equals(SoManySweats.config.getInstance().apiData.apiKey, "")) {
+		if (Objects.equals(config.getInstance().apiData.apiKey, "")) {
 			Logger.log("No API key found.");
 			return;
 		}
@@ -70,11 +70,14 @@ public class ApiHandler {
 		String ws = "???";
 		int finalKills = 0;
 		int finalDeaths = 0;
+		String custom1 = "???";
+		String custom2 = "???";
+		String custom3 = "???";
 
 		try {
 			URL url;
-			if (SoManySweats.config.getInstance().apiData.developerMode) {
-				url = new URL(HYPIXEL_API + "?key=" + SoManySweats.config.getInstance().apiData.apiKey + "&uuid=" + uuid);
+			if (config.getInstance().apiData.developerMode) {
+				url = new URL(HYPIXEL_API + "?key=" + config.getInstance().apiData.apiKey + "&uuid=" + uuid);
 			} else {
 				url = new URL(PROXY_API + "/player?uuid=" + uuid);
 			}
@@ -109,6 +112,9 @@ public class ApiHandler {
 				finalDeaths = bedwars.getInt("final_deaths_bedwars");
 				ws = String.valueOf(bedwars.getInt("winstreak"));
 			} catch (JSONException ignored) {}
+			custom1 = parseCustomDataPath(player, config.getInstance().statsSettings.custom1);
+			custom2 = parseCustomDataPath(player, config.getInstance().statsSettings.custom2);
+			custom3 = parseCustomDataPath(player, config.getInstance().statsSettings.custom3);
 
 			if (!bedwarsLevel.equals("Nick")) {
 				fkdr = finalDeaths != 0
@@ -123,7 +129,30 @@ public class ApiHandler {
 		playerStats.put("level", DataFormatter.formatBedwarsLevel(bedwarsLevel));
 		playerStats.put("fkdr", DataFormatter.formatFkdr(fkdr));
 		playerStats.put("winstreak", DataFormatter.formatWs(ws));
+		playerStats.put("custom1", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.RED + "-" + custom1 + "-"));
+		playerStats.put("custom2", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.GREEN + "~" + custom2 + "~"));
+		playerStats.put("custom3", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.BLUE + "=" + custom3 + "="));
 
 		STATS.put(uuid, playerStats);
+	}
+
+	private static String parseCustomDataPath(JSONObject player, String path) {
+		try {
+			String[] paths = path.split("/");
+			JSONObject current = player;
+
+			for (String s : paths) {
+				Object value = current.get(s);
+
+				if (value instanceof JSONObject) {
+					current = (JSONObject) value;
+				} else if (value == JSONObject.NULL) {
+					return "???";
+				} else {
+					return value.toString();
+				}
+			}
+		} catch (JSONException ignored) {}
+		return "???";
 	}
 }

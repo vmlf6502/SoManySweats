@@ -22,6 +22,7 @@ package com.replaymod.sms.config;
 import com.google.gson.annotations.Expose;
 import com.replaymod.sms.SoManySweats;
 import com.replaymod.sms.config.categories.ApiData;
+import com.replaymod.sms.config.categories.StatsSettings;
 import io.github.notenoughupdates.moulconfig.Config;
 import io.github.notenoughupdates.moulconfig.annotations.Category;
 import io.github.notenoughupdates.moulconfig.common.text.StructuredText;
@@ -36,6 +37,13 @@ public class SMSConfig extends Config {
 	public void saveNow() {
 		SoManySweats.config.saveToFile();
 	}
+
+	@Expose
+	@Category(
+		name = "Stats",
+		desc = "Choose which stats to display in the tab list"
+	)
+	public StatsSettings statsSettings = new StatsSettings();
 
 	@Expose
 	@Category(
