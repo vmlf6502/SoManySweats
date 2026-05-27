@@ -27,10 +27,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
@@ -43,15 +45,21 @@ import static com.replaymod.sms.SoManySweats.config;
 public class ApiHandler {
 	private static final String HYPIXEL_API = "https://api.hypixel.net/v2/player";
 	private static final String PROXY_API = "https://hypixel-proxy.rustacean64.workers.dev";
+	private static boolean API_KEY_INVALID = false;
+	private static String STORED_INVALID_KEY;
 
 	public static void fetchPlayerStats() {
 		if (Objects.equals(config.getInstance().apiData.apiKey, "")) {
 			Logger.log("No API key found.");
 			return;
+		} else if (Objects.equals(config.getInstance().apiData.apiKey, STORED_INVALID_KEY)) {
+			Logger.log(EnumChatFormatting.RED + "Invalid API key.");
+			return;
+		} else {
+			API_KEY_INVALID = false;
 		}
 
 		Collection<NetworkPlayerInfo> players = Minecraft.getMinecraft().getNetHandler().getPlayerInfoMap();
-
 		for (NetworkPlayerInfo info : players) {
 			String uuid = info.getGameProfile().getId().toString();
 			if (STATS.containsKey(uuid)) {
@@ -60,99 +68,150 @@ public class ApiHandler {
 
 			new Thread(() -> fetchAndStoreStats(info)).start();
 		}
+
+		if (API_KEY_INVALID) {
+			STORED_INVALID_KEY = config.getInstance().apiData.apiKey;
+			Logger.log(EnumChatFormatting.RED + "Invalid API key.");
+		}
 	}
 
 	private static void fetchAndStoreStats(NetworkPlayerInfo info) {
 		String uuid = info.getGameProfile().getId().toString();
 
-		String bedwarsLevel = "Nick";
-		String fkdr = "???";
-		String ws = "???";
-		int finalKills = 0;
-		int finalDeaths = 0;
-		String custom1 = "???";
-		String custom2 = "???";
-		String custom3 = "???";
-
+		URL url;
 		try {
-			URL url;
 			if (config.getInstance().apiData.developerMode) {
 				url = new URL(HYPIXEL_API + "?key=" + config.getInstance().apiData.apiKey + "&uuid=" + uuid);
 			} else {
 				url = new URL(PROXY_API + "/player?uuid=" + uuid);
 			}
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		} catch (MalformedURLException e) {
+			System.err.println("Error creating URL from either " + HYPIXEL_API + " or " + PROXY_API + ": " + e);
+			return;
+		}
+
+		// Fetch from API
+		HttpURLConnection conn;
+		try {
+			conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			conn.setConnectTimeout(5000);
 			conn.setReadTimeout(5000);
 
 			int responseCode = conn.getResponseCode();
 			if (responseCode == 403) {
-				Logger.log(EnumChatFormatting.RED + "Invalid API key.");
+				API_KEY_INVALID = true;
 				return;
 			}
 			if (responseCode != 200) {
 				System.out.println("Request failed with status: " + responseCode);
 			}
-
-			StringBuilder response = new StringBuilder();
-			try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-				String line;
-				while ((line = in.readLine()) != null) {
-					response.append(line);
-				}
+		} catch (IOException e) {
+			if (config.getInstance().apiData.developerMode) {
+				System.err.println("Error connecting to the Hypixel API: " + e);
+				Logger.log(EnumChatFormatting.RED + "Error connecting to the Hypixel API");
+				Logger.log(EnumChatFormatting.GRAY + "	- The Hypixel API may be down.");
+				Logger.log(EnumChatFormatting.GRAY + "	- Check logs for more info.");
+			} else {
+				System.err.println("Error connecting to the proxy: " + e);
+				Logger.log(EnumChatFormatting.RED + "Error connecting to the proxy");
+				Logger.log(EnumChatFormatting.GRAY + "	- The proxy may be down.");
+				Logger.log(EnumChatFormatting.GRAY + "	- Try using Developer Mode if this issue persists.");
+				Logger.log(EnumChatFormatting.GRAY + "	- Check logs for more info.");
 			}
+			return;
+		}
 
-			JSONObject player = new JSONObject(response.toString()).getJSONObject("player");
-
-			try {
-				JSONObject bedwars = player.getJSONObject("stats").getJSONObject("Bedwars");
-				bedwarsLevel = String.valueOf(player.getJSONObject("achievements").getInt("bedwars_level"));
-				finalKills = bedwars.getInt("final_kills_bedwars");
-				finalDeaths = bedwars.getInt("final_deaths_bedwars");
-				ws = String.valueOf(bedwars.getInt("winstreak"));
-			} catch (JSONException ignored) {}
-			custom1 = parseCustomDataPath(player, config.getInstance().statsSettings.custom1);
-			custom2 = parseCustomDataPath(player, config.getInstance().statsSettings.custom2);
-			custom3 = parseCustomDataPath(player, config.getInstance().statsSettings.custom3);
-
-			if (!bedwarsLevel.equals("Nick")) {
-				fkdr = finalDeaths != 0
-					? new BigDecimal(finalKills).divide(new BigDecimal(finalDeaths), 2, RoundingMode.HALF_UP).toString()
-					: String.valueOf(finalKills);
+		StringBuilder response = new StringBuilder();
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+			String line;
+			while ((line = in.readLine()) != null) {
+				response.append(line);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException e) {
+			System.err.println("Error reading input stream: " + e);
+			Logger.log(EnumChatFormatting.RED + "Error reading response from server. Check logs for more info.");
+			return;
+		}
+
+		JSONObject data = new JSONObject(response.toString());
+
+		String success = parseJSON(data, "success");
+		if (Objects.equals(success, "false")) {
+			String cause = parseJSON(data, "cause");
+			System.err.println("Hypixel API request failed. Cause: " + cause);
+			Logger.log(EnumChatFormatting.RED + "Hypixel API request failed. Cause: " + cause + ".");
+			return;
+		}
+
+		// Nick detection
+		boolean nicked = false;
+		String player = parseJSON(data, "player");
+		if (Objects.equals(player, "???")) {
+			// TODO: Query Mojang API to see if the player exists rather than assuming they are nicked even though they may have never logged onto Hypixel
+			nicked = true;
+		}
+
+		String bedwarsLevel, finalKills, finalDeaths, fkdr, winstreak, custom1, custom2, custom3;
+		bedwarsLevel = fkdr = winstreak = custom1 = custom2 = custom3 = "???";
+
+
+		if (!nicked) {
+			JSONObject playerData = new JSONObject(player);
+			bedwarsLevel = parseJSON(playerData, "achievements/bedwars_level");
+			finalKills = parseJSON(playerData, "stats/Bedwars/final_kills_bedwars");
+			finalDeaths = parseJSON(playerData, "stats/Bedwars/final_deaths_bedwars");
+			winstreak = parseJSON(playerData, "stats/Bedwars/winstreak");
+			custom1 = parseJSON(playerData, config.getInstance().statsSettings.custom1);
+			custom2 = parseJSON(playerData, config.getInstance().statsSettings.custom2);
+			custom3 = parseJSON(playerData, config.getInstance().statsSettings.custom3);
+
+			// FKDR
+			if (Objects.equals(finalKills, "???")) {
+				finalKills = "0";
+			}
+			if (Objects.equals(finalDeaths, "???")) {
+				finalDeaths = "0";
+			}
+			if (Objects.equals(finalDeaths, "0")) { // avoid division by zero error
+				fkdr = finalKills;
+			} else {
+				fkdr = String.valueOf(new BigDecimal(finalKills).divide(new BigDecimal(finalDeaths), 2, RoundingMode.HALF_UP));
+			}
 		}
 
 		Map<String, ChatComponentText> playerStats = new HashMap<>();
 		playerStats.put("level", DataFormatter.formatBedwarsLevel(bedwarsLevel));
 		playerStats.put("fkdr", DataFormatter.formatFkdr(fkdr));
-		playerStats.put("winstreak", DataFormatter.formatWs(ws));
+		playerStats.put("winstreak", DataFormatter.formatWs(winstreak));
 		playerStats.put("custom1", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.RED + "-" + custom1 + "-"));
 		playerStats.put("custom2", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.GREEN + "~" + custom2 + "~"));
 		playerStats.put("custom3", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.BLUE + "=" + custom3 + "="));
 
+//		System.out.println("stats " + uuid + ": " + playerStats);
+
 		STATS.put(uuid, playerStats);
 	}
 
-	private static String parseCustomDataPath(JSONObject player, String path) {
-		try {
-			String[] paths = path.split("/");
-			JSONObject current = player;
+	private static String parseJSON(JSONObject data, String path) {
+		String[] paths = path.split("/");
+		JSONObject current = data;
 
-			for (String s : paths) {
-				Object value = current.get(s);
-
-				if (value instanceof JSONObject) {
-					current = (JSONObject) value;
-				} else if (value == JSONObject.NULL) {
-					return "???";
-				} else {
-					return value.toString();
-				}
+		for (String s : paths) {
+			if (!current.has(s)) {
+				return "???";
 			}
-		} catch (JSONException ignored) {}
-		return "???";
+			Object value = current.get(s);
+
+			if (value instanceof JSONObject) {
+				current = (JSONObject) value;
+			} else if (value == JSONObject.NULL) {
+				return "???";
+			} else {
+				return value.toString();
+			}
+		}
+
+		return current.toString();
 	}
 }
