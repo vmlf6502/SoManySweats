@@ -51,10 +51,9 @@ public class SMSCommand extends CommandBase {
 			TriggerOpenConfig.triggerConfig = true;
 		} else if (args[0].equals("fetch")) {
 			ApiHandler.fetchPlayerStats();
-			Logger.log(EnumChatFormatting.GREEN + "Successfully fetched stats!");
 		} else if (args[0].equals("clear")) {
 			STATS.clear();
-			Logger.log(EnumChatFormatting.GREEN + "Successfully cleared stats!");
+			Logger.log(EnumChatFormatting.GREEN + "Successfully cleared stats.");
 		}
 	}
 

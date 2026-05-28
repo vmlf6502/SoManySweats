@@ -25,8 +25,11 @@ import net.minecraft.util.EnumChatFormatting;
 
 public class DataFormatter {
 	public static ChatComponentText formatBedwarsLevel(String bwl) {
-		if (bwl.equals("Nick")) {
-			bwl = EnumChatFormatting.LIGHT_PURPLE + "[" + bwl + "]";
+		if (bwl.equals("???")) {
+			bwl =
+				EnumChatFormatting.GOLD + "[" +
+				EnumChatFormatting.RED + EnumChatFormatting.OBFUSCATED + "???" +
+				EnumChatFormatting.RESET + EnumChatFormatting.RED + "]";
 		} else {
 			int prestige = Integer.parseInt(bwl) / 100;
 			String tag = "[" + bwl + getStar(prestige) + "]";
@@ -38,7 +41,10 @@ public class DataFormatter {
 
 	public static ChatComponentText formatFkdr(String fkdr) {
 		if (fkdr.equals("???")) {
-			fkdr = EnumChatFormatting.YELLOW + "{???}";
+			fkdr =
+				EnumChatFormatting.GOLD + "{" +
+				EnumChatFormatting.RED + EnumChatFormatting.OBFUSCATED + "????" +
+				EnumChatFormatting.RESET + EnumChatFormatting.RED + "}";
 		}
 		else {
 			int prestige = (int) Float.parseFloat(fkdr); // format FKDR the same way we format Bedwars level
@@ -51,7 +57,10 @@ public class DataFormatter {
 
 	public static ChatComponentText formatWs(String ws) {
 		if (ws.equals("???")) {
-			ws = EnumChatFormatting.YELLOW + "<???>";
+			ws =
+				EnumChatFormatting.GOLD + "<" +
+				EnumChatFormatting.RED + EnumChatFormatting.OBFUSCATED + "??" +
+				EnumChatFormatting.RESET + EnumChatFormatting.RED + ">";
 		}
 		else {
 			int wsInt = Integer.parseInt(ws);

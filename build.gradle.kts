@@ -1,3 +1,5 @@
+import dev.architectury.pack200.java.Pack200Adapter
+import net.fabricmc.loom.task.RemapJarTask
 import org.apache.commons.lang3.SystemUtils
 
 plugins {
@@ -32,7 +34,7 @@ loom {
         remove(getByName("server"))
     }
     forge {
-        pack200Provider.set(dev.architectury.pack200.java.Pack200Adapter())
+        pack200Provider.set(Pack200Adapter())
     }
 }
 
@@ -91,7 +93,7 @@ tasks.processResources {
     }
 }
 
-val remapJar by tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar") {
+val remapJar by tasks.named<RemapJarTask>("remapJar") {
     archiveClassifier.set("")
     from(tasks.shadowJar)
     input.set(tasks.shadowJar.get().archiveFile)
@@ -120,6 +122,17 @@ tasks.shadowJar {
     mergeServiceFiles()
     fun relocate(name: String) = relocate(name, "$baseGroup.deps.$name")
     relocate("io.github.notenoughupdates.moulconfig")
+}
+
+// Copy into overrides/ folder automatically
+tasks.build {
+    finalizedBy("copyJar")
+}
+val homeDir: String? = System.getProperty("user.home")
+tasks.register<Copy>("copyJar") {
+    from(tasks.shadowJar)
+    into("$homeDir/.lunarclient/offline/multiver/overrides") // should work for other OS's (untested)
+    rename { "ReplayMod-v1_8-2.6.14.jar" }
 }
 
 tasks.assemble.get().dependsOn(tasks.remapJar)
