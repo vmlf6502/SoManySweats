@@ -43,6 +43,8 @@ SoManySweats is a Minecraft 1.8.9 Forge mod designed for Lunar Client that lets 
     * Run the command, then navigate to the `API` category on the left. Paste your API key into the text box and you should be good to go!
 - `/sms fetch` - Fetch the stats of the players in your game.
     * Stats will appear in the tab list
+- `/sms clear` - Clear the local stats cache so that you can request them from the API again.
+    * This does not fetch any new stats; you still have to run `/sms fetch` to do that
 
 ### Helpful Tips
 If the stats in tab aren't perfectly aligned in nice, neat columns, here are some things you can do to fix it:
