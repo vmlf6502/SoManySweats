@@ -48,6 +48,7 @@ public class ApiHandler {
 	private static final String PROXY_API = "https://hypixel-proxy.rustacean64.workers.dev/player";
 	private static boolean API_KEY_INVALID = false;
 	private static String STORED_INVALID_KEY;
+	private static RateLimiter rateLimiter = new RateLimiter(300, 300);
 
 	public static void fetchPlayerStats() {
 		if (config.getInstance().apiData.developerMode) {
@@ -72,17 +73,24 @@ public class ApiHandler {
 				continue;
 			}
 
-			new Thread(() -> {
-				boolean success = false;
-				try {
-					success = fetchAndStoreStats(info);
-				} finally {
-					if (!success) {
-						errors.getAndIncrement();
+			if (rateLimiter.check("hypixel_api", "GET")) {
+				new Thread(() -> {
+					boolean success = false;
+					try {
+						success = fetchAndStoreStats(info);
+					} finally {
+						if (!success) {
+							errors.getAndIncrement();
+						}
+						latch.countDown();
 					}
+				}).start();
+			} else {
+				while (latch.getCount() > 0) {
+					errors.getAndIncrement();
 					latch.countDown();
 				}
-			}).start();
+			}
 		}
 
 		// Wait for all threads to finish
