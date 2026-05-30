@@ -81,11 +81,18 @@ works as a normal Forge mod, you are able to use this with other clients such as
 Note: this is actually a partial decompilation of a 1.8.9 build of ReplayMod because I wasn't able to get ReplayMod's preprocessor working.
 A 1.8.9 build of ReplayMod is included in the source, and the `ReplayModBackend` class is overridden as a way to hook into the Forge initialization process.
 
+## Developer Mode
+SoManySweats features a Developer Mode, which allows you to use your own API key instead of the Personal API key that is shared among all users.
+This feature is inteded for development purposes only, and any usage under this mode is solely the responsibility of the individual developer.
+If you get banned from the Hypixel API when using Developer Mode, it is not our fault.
+
 ## Important Notice
 This project uses [ReplayMod](https://github.com/ReplayMod/ReplayMod) as a base in order to get its own code running inside Lunar Client.
 I do NOT own nor contribute to ReplayMod. All ReplayMod code is still licensed to them, and SoManySweats inherits the GPL-3.0 license from them.
 Their README can be found at `-README.md` in the root of this project.
 Huge thanks to ReplayMod for making this project possible.
+
+Disclaimer: This project is not affiliated with nor endorsed by Hypixel in any way. Hypixel is a trademark of Hypixel Inc.
 
 Also, big thank you to [axlecoffee](https://github.com/axlecoffee) for making a super cool mod called [CoffeeClient](https://github.com/axlecoffee/CoffeeClient), which is what inspired me to make this.
 Without it, I wouldn't have figured out how to get custom code running inside Lunar Client, and this project wouldn't exist!
