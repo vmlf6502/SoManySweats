@@ -24,7 +24,6 @@ SoManySweats is a Minecraft 1.8.9 Forge mod designed for Lunar Client that lets 
 6. If it isn't already, name the `.jar` file EXACTLY this `ReplayMod-v1_8-2.6.14.jar`
 7. Launch the game through Lunar Client and run the command `/sms`.
    If you see a nice GUI pop up, then you have successfully installed SoManySweats!
-   Go ahead and get an API key from the [Hypixel Developer Dashboard](https://developer.hypixel.net/dashboard) to start using the mod. You may need to log in or create an account.
 
 ### Installation - Other Forge Clients
 
@@ -34,13 +33,10 @@ SoManySweats is a Minecraft 1.8.9 Forge mod designed for Lunar Client that lets 
 4. Place the downloaded `.jar` file in the `mods` folder
 5. Launch the game and run the command `/sms`.
    If you see a nice GUI pop up, then you have successfully installed SoManySweats!
-   Go ahead and get an API key from the [Hypixel Developer Dashboard](https://developer.hypixel.net/dashboard) to start using the mod. You may need to log in or create an account.
 
 ### How to Use
 
-- `/sms` - Opens a GUI where you can configure your API key
-    * API keys can be found on the [Hypixel Developer Dashboard](https://developer.hypixel.net/dashboard)
-    * Run the command, then navigate to the `API` category on the left. Paste your API key into the text box and you should be good to go!
+- `/sms` - Opens a GUI where you can configure your SoManySweats settings.
 - `/sms fetch` - Fetch the stats of the players in your game.
     * Stats will appear in the tab list
 - `/sms clear` - Clear the local stats cache so that you can request them from the API again.
@@ -75,16 +71,17 @@ If the stats in tab aren't perfectly aligned in nice, neat columns, here are som
 ## How It Works
 Lunar Client has this handy feature that allows you to override third-party mods that it uses.
 As it happens, Lunar Client uses a popular third party open-source mod called [ReplayMod](https://github.com/ReplayMod/ReplayMod) (go check them out btw).
-So, we can modify ReplayMod as much as we want (as long as it still contains all the classes of the original ReplayMod), and then override Lunar Client's version of SoManySweats with our own custom version.
-More information on this can be found at [this article](https://support.lunarclient.com/support/solutions/articles/60000752051-third-party-mods) on Lunar Client's website. Because this still
+So, we can modify ReplayMod as much as we want (as long as it still contains all the classes of the original ReplayMod), and then override Lunar Client's version of ReplayMod with our own custom version.
+More information on this process can be found at [this article](https://support.lunarclient.com/support/solutions/articles/60000752051-third-party-mods) on Lunar Client's website. Because this still
 works as a normal Forge mod, you are able to use this with other clients such as Feather Client or Labymod.
 Note: this is actually a partial decompilation of a 1.8.9 build of ReplayMod because I wasn't able to get ReplayMod's preprocessor working.
 A 1.8.9 build of ReplayMod is included in the source, and the `ReplayModBackend` class is overridden as a way to hook into the Forge initialization process.
 
 ## Developer Mode
-SoManySweats features a Developer Mode, which allows you to use your own API key instead of the Personal API key that is shared among all users.
-This feature is inteded for development purposes only, and any usage under this mode is solely the responsibility of the individual developer.
+SoManySweats features a Developer Mode, which allows you to use your own API key instead of our Personal API key that is restricted to the `/player` endpoint of the Hypixel API.
+This feature is intended for development purposes only, and any usage under this mode is solely the responsibility of the individual developer.
 If you get banned from the Hypixel API when using Developer Mode, it is not our fault.
+ * Development API keys can be found on the [Hypixel Developer Dashboard](https://developer.hypixel.net/dashboard). You may need to log in or create an account to get one.
 
 ## Important Notice
 This project uses [ReplayMod](https://github.com/ReplayMod/ReplayMod) as a base in order to get its own code running inside Lunar Client.
