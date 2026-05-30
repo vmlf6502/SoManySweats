@@ -27,28 +27,30 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.replaymod.sms.SoManySweats.STATS;
 import static com.replaymod.sms.SoManySweats.config;
 
 public class ApiHandler {
 	private static final String HYPIXEL_API = "https://api.hypixel.net/v2/player";
-	private static final String PROXY_API = "https://hypixel-proxy.rustacean64.workers.dev/player";
+	private static final String PROXY_API = "https://hypixel-proxy.somanysweats.workers.dev/player";
+
 	private static boolean API_KEY_INVALID = false;
 	private static String STORED_INVALID_KEY;
-	private static RateLimiter rateLimiter = new RateLimiter(300, 300);
+
+	private static final RateLimiter rateLimiter = new RateLimiter(300, 300);
+	private static final ExecutorService threadPool = Executors.newFixedThreadPool(100);
 
 	public static void fetchPlayerStats() {
 		if (config.getInstance().apiData.developerMode) {
@@ -65,29 +67,30 @@ public class ApiHandler {
 
 		Collection<NetworkPlayerInfo> players = Minecraft.getMinecraft().getNetHandler().getPlayerInfoMap();
 		CountDownLatch latch = new CountDownLatch(players.size());
-		AtomicInteger errors = new AtomicInteger(0);
+		ArrayList<String> errors = new ArrayList<>();
 
 		for (NetworkPlayerInfo info : players) {
 			String uuid = info.getGameProfile().getId().toString();
 			if (STATS.containsKey(uuid)) {
+				latch.countDown();
 				continue;
 			}
 
 			if (rateLimiter.check("hypixel_api", "GET")) {
-				new Thread(() -> {
-					boolean success = false;
+				threadPool.submit(() -> {
+					String error = null;
 					try {
-						success = fetchAndStoreStats(info);
+						error = fetchAndStoreStats(info);
 					} finally {
-						if (!success) {
-							errors.getAndIncrement();
+						if (error != null) {
+							errors.add(error);
 						}
 						latch.countDown();
 					}
-				}).start();
+				});
 			} else {
 				while (latch.getCount() > 0) {
-					errors.getAndIncrement();
+					errors.add("Rate limit exceeded.");
 					latch.countDown();
 				}
 			}
@@ -101,12 +104,16 @@ public class ApiHandler {
                 Thread.currentThread().interrupt();
             }
 
-			if (errors.get() != 0) {
-				Logger.log(EnumChatFormatting.RED + "Failed to fetch stats with " + errors.get() + " error(s).");
-				Logger.log(EnumChatFormatting.GRAY + "	- Check logs for more info.");
+			if (!errors.isEmpty()) {
+				Logger.log(EnumChatFormatting.RED + "Failed to fetch " + errors.size() + " player(s)'s stats:");
+
+				List<String> uniqueErrors = new ArrayList<>(new HashSet<>(errors));
+				for (String error : uniqueErrors) {
+					Logger.log(EnumChatFormatting.RED + error);
+				}
+
 				if (config.getInstance().apiData.developerMode && API_KEY_INVALID) {
 					STORED_INVALID_KEY = config.getInstance().apiData.apiKey;
-					Logger.log(EnumChatFormatting.RED + "Invalid API key.");
 				}
 			} else {
 				Logger.log(EnumChatFormatting.GREEN + "Successfully fetched stats.");
@@ -114,7 +121,7 @@ public class ApiHandler {
         }).start();
 	}
 
-	private static boolean fetchAndStoreStats(NetworkPlayerInfo info) {
+	private static String fetchAndStoreStats(NetworkPlayerInfo info) {
 		String uuid = info.getGameProfile().getId().toString();
 
 		URL url;
@@ -126,63 +133,67 @@ public class ApiHandler {
 			}
 		} catch (MalformedURLException e) {
 			System.err.println("Error creating URL from either " + HYPIXEL_API + " or " + PROXY_API + ": " + e);
-			return false;
+
+			return "Error resolving API URL";
 		}
 
 		// Fetch from API
 		HttpURLConnection conn;
+		boolean requestFailed = false;
 		try {
 			conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			conn.setConnectTimeout(5000);
 			conn.setReadTimeout(5000);
-			// Make CloudFlare allow the request
-			conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
 			if (config.getInstance().apiData.developerMode) {
 				conn.setRequestProperty("API-Key", config.getInstance().apiData.apiKey);
+			} else {
+				// Make CloudFlare allow the request
+				conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
 			}
 
 			int responseCode = conn.getResponseCode();
-			if (responseCode == 403) {
-				if (config.getInstance().apiData.developerMode) {
-					API_KEY_INVALID = true;
-				}
-				BufferedReader err = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-				StringBuilder errBody = new StringBuilder();
-				String line;
-				while ((line = err.readLine()) != null) errBody.append(line);
-				System.err.println("Server returned response code 403 for URL: " + url + " with body: " + errBody);
-				return false;
-			}
 			if (responseCode != 200) {
-				System.out.println("Request failed with status: " + responseCode);
+				System.err.println("Request failed with status: " + responseCode);
+				if (!(responseCode == 400 || responseCode == 403 || responseCode == 429)) {
+					return "Unexpected response code " + responseCode + ".";
+				}
+				requestFailed = true;
 			}
 		} catch (IOException e) {
 			if (config.getInstance().apiData.developerMode) {
 				System.err.println("Error connecting to the Hypixel API: " + e);
-				Logger.log(EnumChatFormatting.RED + "Error connecting to the Hypixel API");
-				Logger.log(EnumChatFormatting.GRAY + "	- The Hypixel API may be down.");
-				Logger.log(EnumChatFormatting.GRAY + "	- Check logs for more info.");
-			} else {
-				System.err.println("Error connecting to the proxy: " + e);
-				Logger.log(EnumChatFormatting.RED + "Error connecting to the proxy");
-				Logger.log(EnumChatFormatting.GRAY + "	- The proxy may be down.");
-				Logger.log(EnumChatFormatting.GRAY + "	- Try using Developer Mode if this issue persists.");
-				Logger.log(EnumChatFormatting.GRAY + "	- Check logs for more info.");
+				return "Error connecting to the Hypixel API. The Hypixel API may be down";
 			}
-			return false;
+			System.err.println("Error connecting to the proxy: " + e);
+			return "Error connecting to the proxy. The proxy may be down. Try using Developer Mode if this issue persists";
 		}
 
+        InputStream inputStream;
+        try {
+            inputStream = requestFailed
+                    ? conn.getErrorStream()
+                    : conn.getInputStream();
+        } catch (IOException e) {
+			System.err.println("Error getting input stream: " + e);
+			conn.disconnect();
+            return "Error getting input stream.";
+        }
+
 		StringBuilder response = new StringBuilder();
-		try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(inputStream))) {
 			String line;
-			while ((line = in.readLine()) != null) {
-				response.append(line);
-			}
+			while ((line = in.readLine()) != null) response.append(line);
 		} catch (IOException e) {
 			System.err.println("Error reading input stream: " + e);
-			Logger.log(EnumChatFormatting.RED + "Error reading response from server. Check logs for more info.");
-			return false;
+			return "Error reading the API's response.";
+		} finally {
+			conn.disconnect();
+			try {
+				inputStream.close();
+			} catch (IOException e) {
+				System.err.println("Error closing input stream: " + e);
+			}
 		}
 
 		JSONObject data = new JSONObject(response.toString());
@@ -191,11 +202,10 @@ public class ApiHandler {
 		if (Objects.equals(success, "false")) {
 			String cause = parseJSON(data, "cause");
 			System.err.println("Hypixel API request failed. Cause: " + cause);
-			Logger.log(EnumChatFormatting.RED + "Hypixel API request failed. Cause: " + cause + ".");
-			return false;
+			return "Cause: " + cause + ".";
 		} else if (Objects.equals(success, "???")) {
 			System.err.println("Unexpected response from server: " + data);
-			Logger.log("bad things happended");
+			return "Unexpected response from server.";
 		}
 
 		// Nick detection
@@ -243,7 +253,7 @@ public class ApiHandler {
 		playerStats.put("custom3", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.BLUE + "=" + custom3 + "="));
 
 		STATS.put(uuid, playerStats);
-		return true;
+		return null;
 	}
 
 	private static String parseJSON(JSONObject data, String path) {
