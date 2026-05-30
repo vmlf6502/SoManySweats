@@ -38,6 +38,7 @@ import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.replaymod.sms.SoManySweats.STATS;
 import static com.replaymod.sms.SoManySweats.config;
@@ -68,6 +69,7 @@ public class ApiHandler {
 		Collection<NetworkPlayerInfo> players = Minecraft.getMinecraft().getNetHandler().getPlayerInfoMap();
 		CountDownLatch latch = new CountDownLatch(players.size());
 		ArrayList<String> errors = new ArrayList<>();
+		AtomicInteger successes = new AtomicInteger();
 
 		for (NetworkPlayerInfo info : players) {
 			String uuid = info.getGameProfile().getId().toString();
@@ -80,12 +82,13 @@ public class ApiHandler {
 				threadPool.submit(() -> {
 					String error = null;
 					try {
-						error = fetchAndStoreStats(info);
+						error = getStatsOfPlayer(info);
 					} finally {
 						if (error != null) {
 							errors.add(error);
 						}
 						latch.countDown();
+						successes.getAndIncrement();
 					}
 				});
 			} else {
@@ -111,17 +114,13 @@ public class ApiHandler {
 				for (String error : uniqueErrors) {
 					Logger.log(EnumChatFormatting.RED + error);
 				}
-
-				if (config.getInstance().apiData.developerMode && API_KEY_INVALID) {
-					STORED_INVALID_KEY = config.getInstance().apiData.apiKey;
-				}
 			} else {
-				Logger.log(EnumChatFormatting.GREEN + "Successfully fetched stats.");
+				Logger.log(EnumChatFormatting.GREEN + "Successfully fetched " + successes.get() + " player(s)'s stats.");
 			}
         }).start();
 	}
 
-	private static String fetchAndStoreStats(NetworkPlayerInfo info) {
+	private static String getStatsOfPlayer(NetworkPlayerInfo info) {
 		String uuid = info.getGameProfile().getId().toString();
 
 		URL url;
@@ -202,6 +201,15 @@ public class ApiHandler {
 		if (Objects.equals(success, "false")) {
 			String cause = parseJSON(data, "cause");
 			System.err.println("Hypixel API request failed. Cause: " + cause);
+			if (Objects.equals(cause, "Invalid API key")) {
+				if (!config.getInstance().apiData.developerMode) {
+					return "The proxy's API key is invalid. " +
+							"Open an issue on GitHub (if there isn't one already) and we'll update the key as soon as we can. " +
+							"In the meantime, you can try using Developer Mode with your own API key.";
+				}
+				API_KEY_INVALID = true;
+				STORED_INVALID_KEY = config.getInstance().apiData.apiKey;
+			}
 			return "Cause: " + cause + ".";
 		} else if (Objects.equals(success, "???")) {
 			System.err.println("Unexpected response from server: " + data);
