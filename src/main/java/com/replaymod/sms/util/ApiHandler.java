@@ -165,7 +165,7 @@ public class ApiHandler {
 				return "Error connecting to the Hypixel API. The Hypixel API may be down";
 			}
 			System.err.println("Error connecting to the proxy: " + e);
-			return "Error connecting to the proxy. The proxy may be down. Try using Developer Mode if this issue persists";
+			return "Error connecting to the proxy. The proxy may be down. If you are a developer, try using Developer Mode if this issue persists.";
 		}
 
         InputStream inputStream;
@@ -205,7 +205,7 @@ public class ApiHandler {
 				if (!config.getInstance().apiData.developerMode) {
 					return "The proxy's API key is invalid. " +
 							"Open an issue on GitHub (if there isn't one already) and we'll update the key as soon as we can. " +
-							"In the meantime, you can try using Developer Mode with your own API key.";
+							"In the meantime, if you are a developer, you can try using Developer Mode with your own API key.";
 				}
 				API_KEY_INVALID = true;
 				STORED_INVALID_KEY = config.getInstance().apiData.apiKey;

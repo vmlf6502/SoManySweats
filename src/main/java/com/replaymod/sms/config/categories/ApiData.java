@@ -29,7 +29,7 @@ public class ApiData {
 	@Expose
 	@ConfigOption(
 		name = "Developer Mode",
-		desc = "Enable Developer Mode to use your own API key for development of SoManySweats"
+		desc = "Enable Developer Mode to use your own API key for development of SoManySweats. USE AT YOUR OWN RISK. We are not responsible for your potential misuse of the Hypixel API when using this mode."
 	)
 	@ConfigEditorBoolean
 	public boolean developerMode = false;
