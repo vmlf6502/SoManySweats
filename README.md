@@ -72,7 +72,7 @@ If the stats in tab aren't perfectly aligned in nice, neat columns, here are som
 Lunar Client has this handy feature that allows you to override third-party mods that it uses.
 As it happens, Lunar Client uses a popular third party open-source mod called [ReplayMod](https://github.com/ReplayMod/ReplayMod) (go check them out btw).
 So, we can modify ReplayMod as much as we want (as long as it still contains all the classes of the original ReplayMod), and then override Lunar Client's version of ReplayMod with our own custom version.
-More information on this process can be found at [this article](https://support.lunarclient.com/support/solutions/articles/60000752051-third-party-mods) on Lunar Client's website. Because this still
+More information on this process can be found at [this article](https://web.archive.org/web/20260221030830/https://support.lunarclient.com/support/solutions/articles/60000752051-third-party-mods) on Lunar Client's website. Because this still
 works as a normal Forge mod, you are able to use this with other clients such as Feather Client or Labymod.
 Note: this is actually a partial decompilation of a 1.8.9 build of ReplayMod because I wasn't able to get ReplayMod's preprocessor working.
 A 1.8.9 build of ReplayMod is included in the source, and the `ReplayModBackend` class is overridden as a way to hook into the Forge initialization process.
