@@ -101,11 +101,11 @@ public class ApiHandler {
 
 		// Wait for all threads to finish
 		new Thread(() -> {
-            try {
-                latch.await();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+			try {
+				latch.await();
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
 
 			if (!errors.isEmpty()) {
 				Logger.log(EnumChatFormatting.RED + "Failed to fetch " + errors.size() + " player(s)'s stats:");
@@ -117,7 +117,7 @@ public class ApiHandler {
 			} else {
 				Logger.log(EnumChatFormatting.GREEN + "Successfully fetched " + successes.get() + " player(s)'s stats.");
 			}
-        }).start();
+		}).start();
 	}
 
 	private static String getStatsOfPlayer(NetworkPlayerInfo info) {
@@ -168,19 +168,19 @@ public class ApiHandler {
 			return "Error connecting to the proxy. The proxy may be down. If you are a developer, try using Developer Mode if this issue persists.";
 		}
 
-        InputStream inputStream;
-        try {
-            inputStream = requestFailed
-                    ? conn.getErrorStream()
-                    : conn.getInputStream();
-        } catch (IOException e) {
+		InputStream inputStream;
+		try {
+			inputStream = requestFailed
+					? conn.getErrorStream()
+					: conn.getInputStream();
+		} catch (IOException e) {
 			System.err.println("Error getting input stream: " + e);
 			conn.disconnect();
-            return "Error getting input stream.";
-        }
+			return "Error getting input stream.";
+		}
 
 		StringBuilder response = new StringBuilder();
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(inputStream))) {
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(inputStream))) {
 			String line;
 			while ((line = in.readLine()) != null) response.append(line);
 		} catch (IOException e) {
@@ -224,8 +224,8 @@ public class ApiHandler {
 			nicked = true;
 		}
 
-		String bedwarsLevel, finalKills, finalDeaths, fkdr, winstreak, custom1, custom2, custom3;
-		bedwarsLevel = fkdr = winstreak = custom1 = custom2 = custom3 = "???";
+		String bedwarsLevel, finalKills, finalDeaths, fkdr, winstreak, wins, losses, wlr, custom1, custom2, custom3;
+		bedwarsLevel = fkdr = winstreak = wins = losses = wlr = custom1 = custom2 = custom3 = "???";
 
 
 		if (!nicked) {
@@ -234,6 +234,8 @@ public class ApiHandler {
 			finalKills = parseJSON(playerData, "stats/Bedwars/final_kills_bedwars");
 			finalDeaths = parseJSON(playerData, "stats/Bedwars/final_deaths_bedwars");
 			winstreak = parseJSON(playerData, "stats/Bedwars/winstreak");
+			wins = parseJSON(playerData, "stats/Bedwars/wins_bedwars");
+			losses = parseJSON(playerData, "stats/Bedwars/losses_bedwars");
 			custom1 = parseJSON(playerData, config.getInstance().statsSettings.custom1);
 			custom2 = parseJSON(playerData, config.getInstance().statsSettings.custom2);
 			custom3 = parseJSON(playerData, config.getInstance().statsSettings.custom3);
@@ -250,12 +252,26 @@ public class ApiHandler {
 			} else {
 				fkdr = String.valueOf(new BigDecimal(finalKills).divide(new BigDecimal(finalDeaths), 2, RoundingMode.HALF_UP));
 			}
+
+			// WLR
+			if (Objects.equals(wins, "???")) {
+				wins = "0";
+			}
+			if (Objects.equals(losses, "???")) {
+				losses = "0";
+			}
+			if (Objects.equals(losses, "0")) { // avoid division by zero error
+				wlr = wins;
+			} else {
+				wlr = String.valueOf(new BigDecimal(wins).divide(new BigDecimal(losses), 2, RoundingMode.HALF_UP));
+			}
 		}
 
 		Map<String, ChatComponentText> playerStats = new HashMap<>();
 		playerStats.put("level", DataFormatter.formatBedwarsLevel(bedwarsLevel));
 		playerStats.put("fkdr", DataFormatter.formatFkdr(fkdr));
 		playerStats.put("winstreak", DataFormatter.formatWs(winstreak));
+		playerStats.put("wlr", DataFormatter.formatWlr(wlr));
 		playerStats.put("custom1", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.RED + "-" + custom1 + "-"));
 		playerStats.put("custom2", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.GREEN + "~" + custom2 + "~"));
 		playerStats.put("custom3", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.BLUE + "=" + custom3 + "="));

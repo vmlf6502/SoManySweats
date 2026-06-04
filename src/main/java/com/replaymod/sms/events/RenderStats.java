@@ -54,6 +54,7 @@ public class RenderStats {
         if (config.getInstance().statsSettings.showLevel) { statsShown.add("level"); }
         if (config.getInstance().statsSettings.showFkdr) { statsShown.add("fkdr"); }
         if (config.getInstance().statsSettings.showWinstreak) { statsShown.add("winstreak"); }
+        if (config.getInstance().statsSettings.showWlr) { statsShown.add("wlr"); }
         if (!Objects.equals(config.getInstance().statsSettings.custom1, "")) { statsShown.add("custom1"); }
         if (!Objects.equals(config.getInstance().statsSettings.custom2, "")) { statsShown.add("custom2"); }
         if (!Objects.equals(config.getInstance().statsSettings.custom3, "")) { statsShown.add("custom3"); }

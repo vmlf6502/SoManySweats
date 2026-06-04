@@ -27,9 +27,9 @@ public class DataFormatter {
 	public static ChatComponentText formatBedwarsLevel(String bwl) {
 		if (bwl.equals("???")) {
 			bwl =
-				EnumChatFormatting.GOLD + "[" +
-				EnumChatFormatting.RED + EnumChatFormatting.OBFUSCATED + "???" +
-				EnumChatFormatting.RESET + EnumChatFormatting.RED + "]";
+					EnumChatFormatting.GOLD + "[" +
+							EnumChatFormatting.RED + EnumChatFormatting.OBFUSCATED + "???" +
+							EnumChatFormatting.RESET + EnumChatFormatting.RED + "]";
 		} else {
 			int prestige = Integer.parseInt(bwl) / 100;
 			String tag = "[" + bwl + getStar(prestige) + "]";
@@ -42,9 +42,9 @@ public class DataFormatter {
 	public static ChatComponentText formatFkdr(String fkdr) {
 		if (fkdr.equals("???")) {
 			fkdr =
-				EnumChatFormatting.GOLD + "{" +
-				EnumChatFormatting.RED + EnumChatFormatting.OBFUSCATED + "????" +
-				EnumChatFormatting.RESET + EnumChatFormatting.RED + "}";
+					EnumChatFormatting.GOLD + "{" +
+							EnumChatFormatting.RED + EnumChatFormatting.OBFUSCATED + "????" +
+							EnumChatFormatting.RESET + EnumChatFormatting.RED + "}";
 		}
 		else {
 			int prestige = (int) Float.parseFloat(fkdr); // format FKDR the same way we format Bedwars level
@@ -58,9 +58,9 @@ public class DataFormatter {
 	public static ChatComponentText formatWs(String ws) {
 		if (ws.equals("???")) {
 			ws =
-				EnumChatFormatting.GOLD + "<" +
-				EnumChatFormatting.RED + EnumChatFormatting.OBFUSCATED + "??" +
-				EnumChatFormatting.RESET + EnumChatFormatting.RED + ">";
+					EnumChatFormatting.GOLD + "<" +
+							EnumChatFormatting.RED + EnumChatFormatting.OBFUSCATED + "??" +
+							EnumChatFormatting.RESET + EnumChatFormatting.RED + ">";
 		}
 		else {
 			int wsInt = Integer.parseInt(ws);
@@ -81,6 +81,35 @@ public class DataFormatter {
 			else ws = EnumChatFormatting.DARK_PURPLE + "<" + ws + ">";
 		}
 		return new ChatComponentText(" " + EnumChatFormatting.UNDERLINE + ws);
+	}
+
+	public static ChatComponentText formatWlr(String wlr) {
+		if (wlr.equals("???")) {
+			wlr =
+					EnumChatFormatting.GOLD + "(" +
+							EnumChatFormatting.RED + EnumChatFormatting.OBFUSCATED + "??" +
+							EnumChatFormatting.RESET + EnumChatFormatting.RED + ")";
+		}
+		else {
+			float wlrFloat = Float.parseFloat(wlr);
+
+			if (wlrFloat == 0) wlr = EnumChatFormatting.GRAY + "(" + wlr + ")";
+			else if (wlrFloat < 10) wlr = EnumChatFormatting.WHITE + "(" + wlr + ")";
+			else if (wlrFloat < 20) wlr = EnumChatFormatting.GOLD + "(" + wlr + ")";
+			else if (wlrFloat < 30) wlr = EnumChatFormatting.AQUA + "(" + wlr + ")";
+			else if (wlrFloat < 40) wlr = EnumChatFormatting.DARK_GREEN + "(" + wlr + ")";
+			else if (wlrFloat < 50) wlr = EnumChatFormatting.DARK_AQUA + "(" + wlr + ")";
+			else if (wlrFloat < 60) wlr = EnumChatFormatting.DARK_RED + "(" + wlr + ")";
+			else if (wlrFloat < 70) wlr = EnumChatFormatting.LIGHT_PURPLE + "(" + wlr + ")";
+			else if (wlrFloat < 80) wlr = EnumChatFormatting.BLUE + "(" + wlr + ")";
+			else if (wlrFloat < 90) wlr = EnumChatFormatting.DARK_PURPLE + "(" + wlr + ")";
+			else if (wlrFloat < 100) wlr = EnumChatFormatting.RED + "(" + wlr + ")";
+			else if (wlrFloat < 150) wlr = EnumChatFormatting.RED + "(" + wlr + ")";
+			else if (wlrFloat < 200) wlr = EnumChatFormatting.DARK_BLUE + "(" + wlr + ")";
+			else wlr = EnumChatFormatting.DARK_PURPLE + "(" + wlr + ")";
+		}
+
+		return new ChatComponentText(" " + EnumChatFormatting.UNDERLINE + wlr);
 	}
 
 	private static String getStar(int prestige) {
