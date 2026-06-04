@@ -224,8 +224,8 @@ public class ApiHandler {
 			nicked = true;
 		}
 
-		String bedwarsLevel, finalKills, finalDeaths, fkdr, winstreak, wins, losses, wlr, custom1, custom2, custom3;
-		bedwarsLevel = fkdr = winstreak = wins = losses = wlr = custom1 = custom2 = custom3 = "???";
+		String bedwarsLevel, finalKills, finalDeaths, fkdr, winstreak, wins, losses, wlr, skwinstreak, custom1, custom2, custom3;
+		bedwarsLevel = fkdr = winstreak = wins = losses = wlr = skwinstreak = custom1 = custom2 = custom3 = "???";
 
 
 		if (!nicked) {
@@ -236,9 +236,10 @@ public class ApiHandler {
 			winstreak = parseJSON(playerData, "stats/Bedwars/winstreak");
 			wins = parseJSON(playerData, "stats/Bedwars/wins_bedwars");
 			losses = parseJSON(playerData, "stats/Bedwars/losses_bedwars");
-			custom1 = parseJSON(playerData, config.getInstance().statsSettings.custom1);
-			custom2 = parseJSON(playerData, config.getInstance().statsSettings.custom2);
-			custom3 = parseJSON(playerData, config.getInstance().statsSettings.custom3);
+			skwinstreak = parseJSON(playerData, "stats/SkyWars/win_streak");
+			custom1 = parseJSON(playerData, config.getInstance().statsSettings.custom.custom1);
+			custom2 = parseJSON(playerData, config.getInstance().statsSettings.custom.custom2);
+			custom3 = parseJSON(playerData, config.getInstance().statsSettings.custom.custom3);
 
 			// FKDR
 			if (Objects.equals(finalKills, "???")) {
@@ -272,6 +273,7 @@ public class ApiHandler {
 		playerStats.put("fkdr", DataFormatter.formatFkdr(fkdr));
 		playerStats.put("winstreak", DataFormatter.formatWs(winstreak));
 		playerStats.put("wlr", DataFormatter.formatWlr(wlr));
+		playerStats.put("skwinstreak", DataFormatter.formatWs(skwinstreak));
 		playerStats.put("custom1", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.RED + "-" + custom1 + "-"));
 		playerStats.put("custom2", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.GREEN + "~" + custom2 + "~"));
 		playerStats.put("custom3", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.BLUE + "=" + custom3 + "="));
