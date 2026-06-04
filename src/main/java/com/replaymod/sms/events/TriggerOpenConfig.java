@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2026 vmlf
+ * Copyright (C) 2026 SoManySweats contributors.
  *
  * This file is part of SoManySweats.
  *

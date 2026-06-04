@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2026 vmlf
+ * Copyright (C) 2026 SoManySweats contributors.
  *
  * This file is part of SoManySweats.
  *
@@ -30,7 +30,7 @@ import io.github.notenoughupdates.moulconfig.common.text.StructuredText;
 public class SMSConfig extends Config {
 	@Override
 	public StructuredText getTitle() {
-		return StructuredText.of("§7SoManySweats by §5vmlf");
+		return StructuredText.of("§7SoManySweats by §5SoManySweats contributors");
 	}
 
 	@Override
