@@ -40,15 +40,15 @@ public class SMSConfig extends Config {
 
 	@Expose
 	@Category(
-		name = "Stats",
-		desc = "Choose which stats to display in the tab list"
+			name = "Stats",
+			desc = "Choose which stats to display in the tab list"
 	)
 	public StatsSettings statsSettings = new StatsSettings();
 
 	@Expose
 	@Category(
-		name = "API",
-		desc = "API Data"
+			name = "API",
+			desc = "API Data"
 	)
 	public ApiData apiData = new ApiData();
 }

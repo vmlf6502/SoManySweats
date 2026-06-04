@@ -16,8 +16,8 @@ public class StatsSettings {
 
     @Expose
     @ConfigOption(
-            name = "FKDR",
-            desc = "Show the FKDR of players in tab"
+            name = "Final Kill/Death Ratio",
+            desc = "Show the final kill/death ratio of players in tab"
     )
     @ConfigEditorBoolean
     public boolean showFkdr = true;
@@ -29,6 +29,14 @@ public class StatsSettings {
     )
     @ConfigEditorBoolean
     public boolean showWinstreak = true;
+
+    @Expose
+    @ConfigOption(
+            name = "Win/Loss Ratio",
+            desc = "Show the win/loss ratio of players in tab"
+    )
+    @ConfigEditorBoolean
+    public boolean showWlr = true;
 
     @Expose
     @ConfigOption(
