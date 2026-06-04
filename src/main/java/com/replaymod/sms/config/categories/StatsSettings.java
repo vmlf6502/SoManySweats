@@ -1,66 +1,19 @@
 package com.replaymod.sms.config.categories;
 
 import com.google.gson.annotations.Expose;
-import io.github.notenoughupdates.moulconfig.annotations.ConfigEditorBoolean;
-import io.github.notenoughupdates.moulconfig.annotations.ConfigEditorText;
-import io.github.notenoughupdates.moulconfig.annotations.ConfigOption;
+import io.github.notenoughupdates.moulconfig.annotations.Category;
 
 public class StatsSettings {
-    @Expose
-    @ConfigOption(
-            name = "Bedwars Level",
-            desc = "Show the Bedwars Level of players in tab"
-    )
-    @ConfigEditorBoolean
-    public boolean showLevel = true;
 
     @Expose
-    @ConfigOption(
-            name = "Final Kill/Death Ratio",
-            desc = "Show the final kill/death ratio of players in tab"
-    )
-    @ConfigEditorBoolean
-    public boolean showFkdr = true;
+    @Category(name = "Bedwars", desc = "Bedwars stats shown in tab")
+    public BedwarsSettings bedwars = new BedwarsSettings();
 
     @Expose
-    @ConfigOption(
-            name = "Winstreak",
-            desc = "Show the Winstreak of players in tab"
-    )
-    @ConfigEditorBoolean
-    public boolean showWinstreak = true;
+    @Category(name = "Skywars", desc = "Skywars stats shown in tab")
+    public SkywarsSettings skywars = new SkywarsSettings();
 
     @Expose
-    @ConfigOption(
-            name = "Win/Loss Ratio",
-            desc = "Show the win/loss ratio of players in tab"
-    )
-    @ConfigEditorBoolean
-    public boolean showWlr = true;
-
-    @Expose
-    @ConfigOption(
-            name = "Custom Endpoint 1",
-            desc = "Get a custom data value from the /v2/player endpoint of the Hypixel API"
-    )
-    @ConfigEditorText
-    public String custom1 = "newPackageRank";
-
-    @Expose
-    @ConfigOption(
-            name = "Custom Endpoint 2",
-            desc = "Get a custom data value from the /v2/player endpoint of the Hypixel API"
-    )
-    @ConfigEditorText
-    public String custom2 = "stats/Bedwars/bw_unique_challenges_completed";
-
-    @Expose
-    @ConfigOption(
-            name = "Custom Endpoint 3",
-            desc = "Get a custom data value from the /v2/player endpoint of the Hypixel API"
-    )
-    @ConfigEditorText
-    public String custom3 = "socialMedia/links/DISCORD";
-
-
+    @Category(name = "Custom Endpoints", desc = "Custom API values")
+    public CustomSettings custom = new CustomSettings();
 }
