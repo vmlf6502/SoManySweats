@@ -70,6 +70,7 @@ public class ApiHandler {
 		CountDownLatch latch = new CountDownLatch(players.size());
 		ArrayList<String> errors = new ArrayList<>();
 		AtomicInteger successes = new AtomicInteger();
+		AtomicInteger skips = new AtomicInteger();
 
 		for (NetworkPlayerInfo info : players) {
 			String uuid = info.getGameProfile().getId().toString();
@@ -85,10 +86,15 @@ public class ApiHandler {
 						error = getStatsOfPlayer(info);
 					} finally {
 						if (error != null) {
-							errors.add(error);
+							if ("Skipped".equals(error)) {
+								skips.getAndIncrement();
+							} else {
+								errors.add(error);
+							}
+						} else {
+							successes.getAndIncrement();
 						}
 						latch.countDown();
-						successes.getAndIncrement();
 					}
 				});
 			} else {
@@ -108,19 +114,28 @@ public class ApiHandler {
 			}
 
 			if (!errors.isEmpty()) {
-				Logger.log(EnumChatFormatting.RED + "Failed to fetch " + errors.size() + " player(s)'s stats:");
-
 				List<String> uniqueErrors = new ArrayList<>(new HashSet<>(errors));
+				uniqueErrors.remove("Skipped");
+
+				Logger.log(EnumChatFormatting.RED + "Failed to fetch " + errors.size() + " player(s)'s stats:");
 				for (String error : uniqueErrors) {
 					Logger.log(EnumChatFormatting.RED + error);
 				}
 			} else {
 				Logger.log(EnumChatFormatting.GREEN + "Successfully fetched " + successes.get() + " player(s)'s stats.");
+				if (skips.get() != 0) {
+					Logger.log(EnumChatFormatting.GREEN + "(Skipped " + skips + " bots/obfuscated names)");
+				}
 			}
 		}).start();
 	}
 
 	private static String getStatsOfPlayer(NetworkPlayerInfo info) {
+		// Avoid getting stats of bots and obfuscated players
+		if (Objects.equals(info.getPlayerTeam().getTeamName(), "§fa999-76d80d5f")) {
+			return "Skipped";
+		}
+
 		String uuid = info.getGameProfile().getId().toString();
 
 		URL url;
