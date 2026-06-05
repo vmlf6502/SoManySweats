@@ -25,7 +25,7 @@ import io.github.notenoughupdates.moulconfig.annotations.ConfigEditorText;
 import io.github.notenoughupdates.moulconfig.annotations.ConfigOption;
 
 
-public class ApiData {
+public class ApiSettings {
 	@Expose
 	@ConfigOption(
 		name = "Developer Mode",

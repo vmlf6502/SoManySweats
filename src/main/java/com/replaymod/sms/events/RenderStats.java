@@ -58,18 +58,19 @@ public class RenderStats {
         ArrayList<String> statsShown = new ArrayList<>();
 
         // BEDWARS
-        if (config.getInstance().statsSettings.bedwars.showLevel) statsShown.add("level");
-        if (config.getInstance().statsSettings.bedwars.showFkdr) statsShown.add("fkdr");
-        if (config.getInstance().statsSettings.bedwars.showWinstreak) statsShown.add("winstreak");
-        if (config.getInstance().statsSettings.bedwars.showWlr) statsShown.add("wlr");
+        if (config.getInstance().statsSettings.bedwars.level) statsShown.add("level");
+        if (config.getInstance().statsSettings.bedwars.fkdr) statsShown.add("fkdr");
+        if (config.getInstance().statsSettings.bedwars.winstreak) statsShown.add("winstreak");
+        if (config.getInstance().statsSettings.bedwars.wlr) statsShown.add("wlr");
 
         // SKYWARS
-        if (config.getInstance().statsSettings.skywars.showWinstreak) statsShown.add("skwinstreak");
+        if (config.getInstance().statsSettings.skywars.winstreak) statsShown.add("skwinstreak");
+        if (config.getInstance().statsSettings.skywars.kdr) statsShown.add("kdr");
 
         // CUSTOM
-        if (!Objects.equals(config.getInstance().statsSettings.custom.custom1, "")) statsShown.add("custom1");
-        if (!Objects.equals(config.getInstance().statsSettings.custom.custom2, "")) statsShown.add("custom2");
-        if (!Objects.equals(config.getInstance().statsSettings.custom.custom3, "")) statsShown.add("custom3");
+        if (config.getInstance().statsSettings.custom.custom1.enabled) statsShown.add("custom1");
+        if (config.getInstance().statsSettings.custom.custom2.enabled) statsShown.add("custom2");
+        if (config.getInstance().statsSettings.custom.custom3.enabled) statsShown.add("custom3");
 
         // APPLY
         for (String stat : statsShown) {

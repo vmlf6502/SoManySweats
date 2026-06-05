@@ -239,9 +239,8 @@ public class ApiHandler {
 			nicked = true;
 		}
 
-		String bedwarsLevel, finalKills, finalDeaths, fkdr, winstreak, wins, losses, wlr, skwinstreak, custom1, custom2, custom3;
-		bedwarsLevel = fkdr = winstreak = wins = losses = wlr = skwinstreak = custom1 = custom2 = custom3 = "???";
-
+		String bedwarsLevel, finalKills, finalDeaths, fkdr, winstreak, wins, losses, wlr, skwinstreak, kills, deaths, kdr, custom1, custom2, custom3;
+		bedwarsLevel = fkdr = winstreak = wins = losses = wlr = skwinstreak = kills = deaths = kdr = custom1 = custom2 = custom3 = "???";
 
 		if (!nicked) {
 			JSONObject playerData = new JSONObject(player);
@@ -252,35 +251,15 @@ public class ApiHandler {
 			wins = parseJSON(playerData, "stats/Bedwars/wins_bedwars");
 			losses = parseJSON(playerData, "stats/Bedwars/losses_bedwars");
 			skwinstreak = parseJSON(playerData, "stats/SkyWars/win_streak");
-			custom1 = parseJSON(playerData, config.getInstance().statsSettings.custom.custom1);
-			custom2 = parseJSON(playerData, config.getInstance().statsSettings.custom.custom2);
-			custom3 = parseJSON(playerData, config.getInstance().statsSettings.custom.custom3);
+			kills = parseJSON(playerData, "stats/SkyWars/kills");
+			deaths = parseJSON(playerData, "stats/SkyWars/deaths");
+			custom1 = parseJSON(playerData, config.getInstance().statsSettings.custom.custom1.path);
+			custom2 = parseJSON(playerData, config.getInstance().statsSettings.custom.custom2.path);
+			custom3 = parseJSON(playerData, config.getInstance().statsSettings.custom.custom3.path);
 
-			// FKDR
-			if (Objects.equals(finalKills, "???")) {
-				finalKills = "0";
-			}
-			if (Objects.equals(finalDeaths, "???")) {
-				finalDeaths = "0";
-			}
-			if (Objects.equals(finalDeaths, "0")) { // avoid division by zero error
-				fkdr = finalKills;
-			} else {
-				fkdr = String.valueOf(new BigDecimal(finalKills).divide(new BigDecimal(finalDeaths), 2, RoundingMode.HALF_UP));
-			}
-
-			// WLR
-			if (Objects.equals(wins, "???")) {
-				wins = "0";
-			}
-			if (Objects.equals(losses, "???")) {
-				losses = "0";
-			}
-			if (Objects.equals(losses, "0")) { // avoid division by zero error
-				wlr = wins;
-			} else {
-				wlr = String.valueOf(new BigDecimal(wins).divide(new BigDecimal(losses), 2, RoundingMode.HALF_UP));
-			}
+			fkdr = getRatio(finalKills, finalDeaths);
+			wlr = getRatio(wins, losses);
+			kdr = getRatio(kills, deaths);
 		}
 
 		Map<String, ChatComponentText> playerStats = new HashMap<>();
@@ -289,6 +268,7 @@ public class ApiHandler {
 		playerStats.put("winstreak", DataFormatter.formatWs(winstreak));
 		playerStats.put("wlr", DataFormatter.formatWlr(wlr));
 		playerStats.put("skwinstreak", DataFormatter.formatWs(skwinstreak));
+		playerStats.put("kdr", DataFormatter.formatFkdr(kdr));
 		playerStats.put("custom1", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.RED + "-" + custom1 + "-"));
 		playerStats.put("custom2", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.GREEN + "~" + custom2 + "~"));
 		playerStats.put("custom3", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.BLUE + "=" + custom3 + "="));
@@ -317,5 +297,19 @@ public class ApiHandler {
 		}
 
 		return current.toString();
+	}
+
+	private static String getRatio(String x, String y) {
+		if (Objects.equals(x, "???")) {
+			x = "0";
+		}
+		if (Objects.equals(y, "???")) {
+			y = "0";
+		}
+		if (Objects.equals(y, "0")) { // avoid division by zero error
+			return x;
+		}
+
+		return String.valueOf(new BigDecimal(x).divide(new BigDecimal(y), 2, RoundingMode.HALF_UP));
 	}
 }
