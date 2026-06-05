@@ -83,6 +83,9 @@ This feature is intended for development purposes only, and any usage under this
 If you get banned from the Hypixel API when using Developer Mode, it is not our fault.
  * Development API keys can be found on the [Hypixel Developer Dashboard](https://developer.hypixel.net/dashboard). You may need to log in or create an account to get one.
 
+## Contributing
+Contributors are welcome! See the [contribution guide](https://github.com/vmlf6502/SoManySweats/blob/main/CONTRIBUTING.md) to learn how to contribute.
+
 ## Important Notice
 This project uses [ReplayMod](https://github.com/ReplayMod/ReplayMod) as a base in order to get its own code running inside Lunar Client.
 I do NOT own nor contribute to ReplayMod. All ReplayMod code is still licensed to them, and SoManySweats inherits the GPL-3.0 license from them.
