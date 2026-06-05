@@ -5,15 +5,26 @@ SoManySweats is a Minecraft 1.8.9 Forge mod designed for Lunar Client that lets 
 
 <img width="1920" height="1080" alt="SoManySweats_showcase" src="https://github.com/user-attachments/assets/c8077c64-610f-43b0-aa6b-458f0931f57e" />
 
-## Features
+## Features ✨
 - Displays stats of players in tab, making it easy to match stats with teams
 - Stats divided into organised columns on the tab list
 - Color coded stats for every prestige up to 5000 stars
 - Automatically fetches stats at the start of a Bedwars game
 
+## Roadmap 🚀
+✅ = Completed, 🔧 = Work in Progress, ❌ = Not Started
+| Feature | Status |
+| --- | --- |
+| Stats in organized columns | ✅ |
+| Color coded stats up to 5000 stars | ✅ |
+| Game start detection using scoreboard | 🔧 |
+| Display player stats when someone talks in chat before a game | ❌ |
+| Fix Lunar Client font issue | ❌ |
+| Add menu to look up any player's stats from in-game | ❌ |
+
 ## Getting Started
 
-### Installation - Lunar Client
+### Installation - Lunar Client 🌙
 
 1. If you don't already have it, download and install [Lunar Client](https://www.lunarclient.com/)
 2. Download the [latest version of SoManySweats](https://github.com/vmlf6502/SoManySweats/releases)
@@ -25,7 +36,7 @@ SoManySweats is a Minecraft 1.8.9 Forge mod designed for Lunar Client that lets 
 7. Launch the game through Lunar Client and run the command `/sms`.
    If you see a nice GUI pop up, then you have successfully installed SoManySweats!
 
-### Installation - Other Forge Clients
+### Installation - Other Forge Clients 🔨
 
 1. While this mod was designed for Lunar Client, it can also work with other clients such as Feather Client or Labymod.
 2. Download the [latest version of SoManySweats](https://github.com/vmlf6502/SoManySweats/releases)
@@ -34,7 +45,7 @@ SoManySweats is a Minecraft 1.8.9 Forge mod designed for Lunar Client that lets 
 5. Launch the game and run the command `/sms`.
    If you see a nice GUI pop up, then you have successfully installed SoManySweats!
 
-### How to Use
+### How to Use 📄
 
 - `/sms` - Opens a GUI where you can configure your SoManySweats settings.
 - `/sms fetch` - Fetch the stats of the players in your game.
@@ -42,7 +53,7 @@ SoManySweats is a Minecraft 1.8.9 Forge mod designed for Lunar Client that lets 
 - `/sms clear` - Clear the local stats cache so that you can request them from the API again.
     * This does not fetch any new stats; you still have to run `/sms fetch` to do that
 
-### Helpful Tips
+### Helpful Tips 💡
 If the stats in tab aren't perfectly aligned in nice, neat columns, here are some things you can do to fix it:
 - On Lunar Client, enable the Tab Editor mod and turn on the option to `Show Lunar Icons on Right`.
   This removes the offset produced by the Lunar Client icon seen next to Lunar users' names on tab.
@@ -68,7 +79,7 @@ If the stats in tab aren't perfectly aligned in nice, neat columns, here are som
      Be sure to put it on top of all your other resource packs or else it won't actually load.
         </details>
 
-## How It Works
+## How It Works ⚙️
 Lunar Client has this handy feature that allows you to override third-party mods that it uses.
 As it happens, Lunar Client uses a popular third party open-source mod called [ReplayMod](https://github.com/ReplayMod/ReplayMod) (go check them out btw).
 So, we can modify ReplayMod as much as we want (as long as it still contains all the classes of the original ReplayMod), and then override Lunar Client's version of ReplayMod with our own custom version.
@@ -77,16 +88,16 @@ works as a normal Forge mod, you are able to use this with other clients such as
 Note: this is actually a partial decompilation of a 1.8.9 build of ReplayMod because I wasn't able to get ReplayMod's preprocessor working.
 A 1.8.9 build of ReplayMod is included in the source, and the `ReplayModBackend` class is overridden as a way to hook into the Forge initialization process.
 
-## Developer Mode
+## Developer Mode 🧑‍💻
 SoManySweats features a Developer Mode, which allows you to use your own API key instead of our Personal API key that is restricted to the `/player` endpoint of the Hypixel API.
 This feature is intended for development purposes only, and any usage under this mode is solely the responsibility of the individual developer.
 If you get banned from the Hypixel API when using Developer Mode, it is not our fault.
  * Development API keys can be found on the [Hypixel Developer Dashboard](https://developer.hypixel.net/dashboard). You may need to log in or create an account to get one.
 
-## Contributing
+## Contributing 👷
 Contributors are welcome! See the [contribution guide](https://github.com/vmlf6502/SoManySweats/blob/main/CONTRIBUTING.md) to learn how to contribute.
 
-## Important Notice
+## Important Notice ‼️
 This project uses [ReplayMod](https://github.com/ReplayMod/ReplayMod) as a base in order to get its own code running inside Lunar Client.
 I do NOT own nor contribute to ReplayMod. All ReplayMod code is still licensed to them, and SoManySweats inherits the GPL-3.0 license from them.
 Their README can be found at `-README.md` in the root of this project.
