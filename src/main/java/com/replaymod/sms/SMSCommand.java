@@ -22,9 +22,19 @@ package com.replaymod.sms;
 import com.replaymod.sms.events.TriggerOpenConfig;
 import com.replaymod.sms.util.ApiHandler;
 import com.replaymod.sms.util.Logger;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.scoreboard.Score;
+import net.minecraft.scoreboard.ScoreObjective;
+import net.minecraft.scoreboard.ScorePlayerTeam;
+import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.EnumChatFormatting;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import static com.replaymod.sms.SoManySweats.STATS;
 
@@ -55,6 +65,23 @@ public class SMSCommand extends CommandBase {
 			STATS.clear();
 			Logger.log(EnumChatFormatting.GREEN + "Successfully cleared stats.");
 		}
+//		} else {
+//			Scoreboard scoreboard = Minecraft.getMinecraft().theWorld.getScoreboard();
+//			ScoreObjective objective = scoreboard.getObjectiveInDisplaySlot(1);
+//
+//			if (objective != null) {
+//				Collection<Score> scores = scoreboard.getSortedScores(objective);
+//				List<Score> scoreList = new ArrayList<>(scores);
+//				Collections.reverse(scoreList); // top to bottom order
+//
+//
+//				for (Score score : scoreList) {
+//					String playerName = score.getPlayerName();
+//
+//					System.out.println(playerName);
+//				}
+//			}
+//		}
 	}
 
 

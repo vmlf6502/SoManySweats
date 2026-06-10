@@ -22,7 +22,13 @@ package com.replaymod.sms.config.categories;
 import com.google.gson.annotations.Expose;
 import io.github.notenoughupdates.moulconfig.annotations.*;
 
-public class TabSettings {
+public class StatsSettings {
+    // CUSTOM TAB
+    @Expose
+    @ConfigOption(name = "Custom Tab", desc = "Renders a custom Tab list, making it easier to read stats. **May break some features of the default Tab list**")
+    @ConfigEditorBoolean
+    public boolean customTab = false;
+
     // BEDWARS
     @Expose
     @ConfigOption(name = "Bedwars", desc = "Bedwars stats shown in Tab")

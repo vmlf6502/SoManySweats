@@ -21,6 +21,9 @@ package com.replaymod.sms.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.scoreboard.ScoreObjective;
+import net.minecraft.scoreboard.ScorePlayerTeam;
+import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import org.json.JSONObject;
@@ -132,7 +135,7 @@ public class ApiHandler {
 
 	private static String getStatsOfPlayer(NetworkPlayerInfo info) {
 		// Avoid getting stats of bots and obfuscated players
-		if (Objects.equals(info.getPlayerTeam().getTeamName(), "§fa999-76d80d5f")) {
+		if (info.getGameProfile().getName().startsWith("§k") || Objects.equals(info.getPlayerTeam().getTeamName(), "§fa999-76d80d5f")) {
 			return "Skipped";
 		}
 

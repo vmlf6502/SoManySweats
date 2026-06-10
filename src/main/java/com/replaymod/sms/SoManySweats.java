@@ -21,9 +21,10 @@ package com.replaymod.sms;
 
 import com.replaymod.sms.config.SMSConfig;
 import com.replaymod.sms.events.BedwarsGameStart;
-import com.replaymod.sms.events.RenderStats;
+import com.replaymod.sms.tab.CustomTab;
 import com.replaymod.sms.events.TriggerOpenConfig;
 import com.replaymod.sms.extras.KeyboardFix;
+import com.replaymod.sms.tab.RenderStats;
 import io.github.notenoughupdates.moulconfig.managed.ManagedConfig;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -38,13 +39,12 @@ public class SoManySweats {
 	public static final SoManySweats INSTANCE = new SoManySweats();
 	public static Map<String, Map<String, ChatComponentText>> STATS = new HashMap<String, Map<String, ChatComponentText>>();
 
-	private File smsDir;
-	public static ManagedConfig<SMSConfig> config;
+    public static ManagedConfig<SMSConfig> config;
 
 	private SoManySweats() {}
 
 	public void preinit(FMLPreInitializationEvent event) {
-		smsDir = new File(event.getModConfigurationDirectory(), "somanysweats");
+        File smsDir = new File(event.getModConfigurationDirectory(), "somanysweats");
 		smsDir.mkdirs();
 		File configFile = new File(smsDir, "configNew.json");
 
