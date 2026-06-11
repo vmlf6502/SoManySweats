@@ -20,6 +20,7 @@
 package com.replaymod.sms.events;
 
 import com.replaymod.sms.SoManySweats;
+import com.replaymod.sms.util.LunarCompatGuiWrapper;
 import io.github.notenoughupdates.moulconfig.gui.GuiScreenElementWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -32,7 +33,7 @@ public class TriggerOpenConfig {
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (triggerConfig) {
-            SoManySweats.config.openConfigGui();
+            Minecraft.getMinecraft().displayGuiScreen(new LunarCompatGuiWrapper(SoManySweats.config.getEditor()));
             triggerConfig = false;
         }
 
