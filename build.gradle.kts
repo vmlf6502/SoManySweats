@@ -10,6 +10,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
+version = "v0.3.3"
 val baseGroup = "com.replaymod"
 val modid = "replaymod"
 
@@ -18,7 +19,6 @@ java {
 }
 
 loom {
-//    log4jConfigs.from(file("log4j2.xml"))
     launchConfigs {
         "client" {
             arg("--tweakClass", "com.replaymod.core.tweaker.ReplayModTweaker")
@@ -77,7 +77,7 @@ tasks.withType(JavaCompile::class) {
 }
 
 tasks.withType(org.gradle.jvm.tasks.Jar::class) {
-    archiveBaseName.set("ReplayMod-v1_8-2.6.14")
+    archiveBaseName.set("SoManySweats")
     manifest.attributes.run {
         this["TweakClass"] = "com.replaymod.core.tweaker.ReplayModTweaker"
         this["TweakOrder"] = "0"
@@ -131,8 +131,8 @@ tasks.build {
 val homeDir: String? = System.getProperty("user.home")
 tasks.register<Copy>("copyJar") {
     from(tasks.shadowJar)
-    into("$homeDir/.lunarclient/offline/multiver/overrides") // should work for other OS's (untested)
-    rename { "ReplayMod-v1_8-2.6.14.jar" }
+    into("$homeDir/.lunarclient/offline/multiver/somanysweats") // should work for other OS's (untested)
+    rename { "${base.archivesName.get()}-${project.version}.jar" }
 }
 
 tasks.assemble.get().dependsOn(tasks.remapJar)
