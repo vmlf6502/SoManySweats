@@ -20,16 +20,27 @@ SoManySweats is a Minecraft 1.8.9 Forge mod designed for Lunar Client that lets 
 | <p align="center">🔧</p> | Game start detection using scoreboard |
 | <p align="center">❌</p> | Display player stats when someone talks in chat before a game |
 | <p align="center">❌</p> | Fix Lunar Client font issue |
-| <p align="center">❌</p> | Add menu to look up any player's stats from in-game |
+| <p align="center">❌</p> | Let you look up any player's stats from in-game |
 
 ## 🚀 Getting Started
 
 ### 🌙 Installation - Lunar Client
+SoManySweats can be installed through the [SoManySweats Loader](https://github.com/vmlf6502/SoManySweats-Loader).
+Just download the [latest release](https://github.com/vmlf6502/SoManySweats-Loader/releases).
+When you run it, you should see a TUI pop up, and from there you can press `U` to download and install SoManySweats.
+Then, press `Space` to start it, and launch Lunar Client with the Forge module (not just regular Lunar Client).
 
-1. If you don't already have it, download and install [Lunar Client](https://www.lunarclient.com/)
-    * Be sure to launch Lunar Client with the Forge module at least once before installing SoManySweats
-2. Download the [latest version of SoManySweats](https://github.com/vmlf6502/SoManySweats/releases)
-3. Open whatever file explorer you use and paste in this path depending on your OS
+### 🔨 Installation - Other Forge Clients
+While this mod was designed for Lunar Client, it can also work with other clients such as Feather Client, Modrinth, or just plain Forge.
+Just install it on those platforms as you would any regular 1.8.9 mod. You'll just have ReplayMod bundled in as well.
+
+### 🛠️ Manual Installation
+
+If you don't trust/want to use the SoManySweats Loader, you can alternatively run a command in the terminal before each launch.
+You still need to manually place the SoManySweats mod in the right folder.
+Steps detailing how to do this are listed below:
+1. Download the [latest version of SoManySweats](https://github.com/vmlf6502/SoManySweats/releases)
+2. Open whatever file explorer you use and paste in this path depending on your OS
     * 🪟🤢&nbsp;&nbsp;<b>Windows</b>
       ```
       %USERPROFILE%\.lunarclient\offline\multiver
@@ -38,10 +49,9 @@ SoManySweats is a Minecraft 1.8.9 Forge mod designed for Lunar Client that lets 
       ```
       ~/.lunarclient/offline/multiver
       ```
-5. Place the downloaded `.jar` file in the `somanysweats/` folder at that directory
+3. Place the downloaded `.jar` file in the `somanysweats/` folder at that directory
     * If you don't have a `somanysweats/` folder, you can simply create one
-6. You must run this command in the terminal before each launch, or else Lunar Client will not load SoManySweats.
-   An app to facilitate this process is currently in the works, and it will be released soon.
+4. You must run this command in the terminal before each launch, or else Lunar Client will not load SoManySweats.
     * 🪟🤢&nbsp;&nbsp;<b>Windows (PowerShell)</b>
       
       ```
@@ -54,10 +64,6 @@ SoManySweats is a Minecraft 1.8.9 Forge mod designed for Lunar Client that lets 
       ```
 8. Launch the game through Lunar Client with the Forge module activated and run the command `/sms`.
     * If you see a nice GUI pop up, then you have successfully installed SoManySweats!
-
-### 🔨 Installation - Other Forge Clients
-While this mod was designed for Lunar Client, it can also work with other clients such as Feather Client, Modrinth, or just plain Forge.
-Just install it on those platforms as you would any regular 1.8.9 mod. You'll just have ReplayMod bundled in as well.
 
 ### 📄 How to Use
 
