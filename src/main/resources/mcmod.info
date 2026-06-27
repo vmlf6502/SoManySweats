@@ -11,6 +11,7 @@
   "credits": "Replay Mod, for making this Lunar Client mod possible.",
   "logoFile": "",
   "screenshots": [],
-  "dependencies": []
+  "dependencies": [],
+  "annotationVersion": "com.replaymod.core.ReplayModBackend"
 }
 ]
