@@ -19,6 +19,7 @@
 
 package me.vmlf6502.somanysweats.tab;
 
+import me.vmlf6502.somanysweats.util.StatKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -56,8 +57,8 @@ public class CustomTab {
 
         COLUMNS = new ArrayList<>();
         COLUMNS.add(new TabColumn("Name", 150, TabColumn.Alignment.LEFT));
-        for (String stat : RenderStats.getStatsShown()) {
-            COLUMNS.add(new TabColumn(stat, 40, TabColumn.Alignment.CENTER));
+        for (StatKey stat : RenderStats.getStatsShown()) {
+            COLUMNS.add(new TabColumn(stat.name(), 100, TabColumn.Alignment.CENTER));
         }
 
         int entryHeight = 10;
@@ -141,18 +142,17 @@ public class CustomTab {
         String name = ScorePlayerTeam.formatPlayerName(team, info.getGameProfile().getName());
 
         UUID uuid = info.getGameProfile().getId();
-        ArrayList<String> statsShown = RenderStats.getStatsShown();
 
-        Map<String, ChatComponentText> playerStats = STATS.get(uuid.toString());
+        Map<StatKey, String> stats = STATS.get(uuid);
         ArrayList<String> statsList = new ArrayList<>();
 
         statsList.add(name);
 
-        if (playerStats != null) {
-            for (String stat : statsShown) {
-                ChatComponentText value = playerStats.get(stat);
+        if (stats != null) {
+            for (StatKey stat : RenderStats.getStatsShown()) {
+                String value = stats.get(stat);
                 if (value == null) continue;
-                statsList.add(value.getUnformattedText());
+                statsList.add(value);
             }
         }
 

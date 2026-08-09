@@ -25,7 +25,7 @@ import me.vmlf6502.somanysweats.events.TriggerOpenConfig;
 import me.vmlf6502.somanysweats.extras.KeyboardFix;
 import me.vmlf6502.somanysweats.tab.RenderStats;
 import io.github.notenoughupdates.moulconfig.managed.ManagedConfig;
-import net.minecraft.util.ChatComponentText;
+import me.vmlf6502.somanysweats.util.StatKey;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -33,10 +33,11 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class SoManySweats {
 	public static final SoManySweats INSTANCE = new SoManySweats();
-	public static Map<String, Map<String, ChatComponentText>> STATS = new HashMap<String, Map<String, ChatComponentText>>();
+	public static Map<UUID, Map<StatKey, String>> STATS = new HashMap<UUID, Map<StatKey, String>>();
 
     public static ManagedConfig<SMSConfig> config;
 

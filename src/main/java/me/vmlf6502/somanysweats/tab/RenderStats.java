@@ -1,5 +1,6 @@
 package me.vmlf6502.somanysweats.tab;
 
+import me.vmlf6502.somanysweats.util.StatKey;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
@@ -20,23 +21,23 @@ public class RenderStats {
         }
     }
 
-    static @NotNull ArrayList<String> getStatsShown() {
-        ArrayList<String> statsShown = new ArrayList<>();
+    static @NotNull ArrayList<StatKey> getStatsShown() {
+        ArrayList<StatKey> statsShown = new ArrayList<>();
 
         // BEDWARS
-        if (config.getInstance().statsSettings.bedwars.level) statsShown.add("level");
-        if (config.getInstance().statsSettings.bedwars.fkdr) statsShown.add("fkdr");
-        if (config.getInstance().statsSettings.bedwars.winstreak) statsShown.add("winstreak");
-        if (config.getInstance().statsSettings.bedwars.wlr) statsShown.add("wlr");
+        if (config.getInstance().statsSettings.bedwars.level) statsShown.add(StatKey.BEDWARS_LEVEL);
+        if (config.getInstance().statsSettings.bedwars.fkdr) statsShown.add(StatKey.BEDWARS_FKDR);
+        if (config.getInstance().statsSettings.bedwars.winstreak) statsShown.add(StatKey.BEDWARS_WINSTREAK);
+        if (config.getInstance().statsSettings.bedwars.wlr) statsShown.add(StatKey.BEDWARS_WLR);
 
         // SKYWARS
-        if (config.getInstance().statsSettings.skywars.winstreak) statsShown.add("skwinstreak");
-        if (config.getInstance().statsSettings.skywars.kdr) statsShown.add("kdr");
+        if (config.getInstance().statsSettings.skywars.winstreak) statsShown.add(StatKey.SKYWARS_WINSTREAK);
+        if (config.getInstance().statsSettings.skywars.kdr) statsShown.add(StatKey.SKYWARS_KDR);
 
         // CUSTOM
-        if (config.getInstance().statsSettings.custom.custom1.enabled) statsShown.add("custom1");
-        if (config.getInstance().statsSettings.custom.custom2.enabled) statsShown.add("custom2");
-        if (config.getInstance().statsSettings.custom.custom3.enabled) statsShown.add("custom3");
+        if (config.getInstance().statsSettings.custom.one.enabled) statsShown.add(StatKey.CUSTOM_1);
+        if (config.getInstance().statsSettings.custom.two.enabled) statsShown.add(StatKey.CUSTOM_2);
+        if (config.getInstance().statsSettings.custom.three.enabled) statsShown.add(StatKey.CUSTOM_3);
         return statsShown;
     }
 }

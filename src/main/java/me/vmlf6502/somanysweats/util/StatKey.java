@@ -1,0 +1,23 @@
+package me.vmlf6502.somanysweats.util;
+
+public enum StatKey {
+    IS_NICKED,
+
+    BEDWARS_LEVEL,
+    BEDWARS_FINAL_KILLS,
+    BEDWARS_FINAL_DEATHS,
+    BEDWARS_FKDR,
+    BEDWARS_WINS,
+    BEDWARS_LOSSES,
+    BEDWARS_WLR,
+    BEDWARS_WINSTREAK,
+
+    SKYWARS_WINSTREAK,
+    SKYWARS_KILLS,
+    SKYWARS_DEATHS,
+    SKYWARS_KDR,
+
+    CUSTOM_1,
+    CUSTOM_2,
+    CUSTOM_3,
+}

@@ -12,7 +12,7 @@ plugins {
 
 version = "0.3.3"
 
-// -Pprofile=lunar (default) or -Pprofile=standalone
+// -Pprofile=lunar to build for Lunar Client
 val buildProfile = project.findProperty("profile")?.toString() ?: "standalone"
 val isLunar = buildProfile == "lunar"
 
@@ -23,7 +23,9 @@ java {
 loom {
     launchConfigs {
         "client" {
-            arg("--tweakClass", "com.replaymod.core.tweaker.ReplayModTweaker")
+            if (isLunar) {
+                arg("--tweakClass", "com.replaymod.core.tweaker.ReplayModTweaker")
+            }
             arg("--tweakClass", "io.github.notenoughupdates.moulconfig.tweaker.DevelopmentResourceTweaker")
         }
     }
@@ -70,6 +72,12 @@ dependencies {
     minecraft("com.mojang:minecraft:1.8.9")
     mappings("de.oceanlabs.mcp:mcp_stable:22-1.8.9")
     "forge"("net.minecraftforge:forge:1.8.9-11.15.1.2318-1.8.9")
+
+    if (isLunar) {
+        runtimeOnly(lunarBackend.output)
+    } else {
+        runtimeOnly(standaloneBackend.output)
+    }
 
     compileOnly(files("ReplayMod-v1_8-2.6.14.jar"))
     // lunarBackend also needs ReplayMod on its classpath to compile against

@@ -84,19 +84,19 @@ public class StatsSettings {
         @Expose
         @ConfigOption(name = "Custom 1", desc = "A custom data value from the API")
         @Accordion
-        public CustomValue custom1 = new CustomValue();
+        public CustomValue one = new CustomValue();
 
         // CUSTOM 2
         @Expose
         @ConfigOption(name = "Custom 2", desc = "A custom data value from the API")
         @Accordion
-        public CustomValue custom2 = new CustomValue();
+        public CustomValue two = new CustomValue();
 
         // CUSTOM 3
         @Expose
         @ConfigOption(name = "Custom 3", desc = "A custom data value from the API")
         @Accordion
-        public CustomValue custom3 = new CustomValue();
+        public CustomValue three = new CustomValue();
 
         public static class CustomValue {
             @Expose

@@ -21,7 +21,7 @@ package me.vmlf6502.somanysweats.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.util.EnumChatFormatting;
 import org.json.JSONObject;
 
@@ -32,7 +32,6 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
@@ -70,30 +69,28 @@ public class ApiHandler {
 		CountDownLatch latch = new CountDownLatch(players.size());
 		ArrayList<String> errors = new ArrayList<>();
 		AtomicInteger successes = new AtomicInteger();
-		AtomicInteger skips = new AtomicInteger();
+		int skips = 0;
 
 		for (NetworkPlayerInfo info : players) {
-			String uuid = info.getGameProfile().getId().toString();
-			if (STATS.containsKey(uuid)) {
+			// Avoid getting stats that we already have and bots/obfuscated players
+			UUID uuid = info.getGameProfile().getId();
+			ScorePlayerTeam team = info.getPlayerTeam();
+			if (STATS.containsKey(uuid) || info.getGameProfile().getName().startsWith("§k") || (team != null && Objects.equals(team.getTeamName(), "§fa999-76d80d5f"))) {
+				skips++;
 				latch.countDown();
 				continue;
 			}
 
 			if (rateLimiter.check("hypixel_api", "GET")) {
 				threadPool.submit(() -> {
-					String error = null;
 					try {
-						error = getStatsOfPlayer(info);
+						Map<StatKey, String> stats = getStatsOfPlayer(uuid);
+						STATS.put(uuid, stats);
+						successes.getAndIncrement();
+					} catch (Exception e) {
+						System.out.println(Arrays.toString(e.getStackTrace()));
+						errors.add(e.getMessage());
 					} finally {
-						if (error != null) {
-							if ("Skipped".equals(error)) {
-								skips.getAndIncrement();
-							} else {
-								errors.add(error);
-							}
-						} else {
-							successes.getAndIncrement();
-						}
 						latch.countDown();
 					}
 				});
@@ -106,6 +103,7 @@ public class ApiHandler {
 		}
 
 		// Wait for all threads to finish
+		int finalSkips = skips;
 		new Thread(() -> {
 			try {
 				latch.await();
@@ -123,76 +121,48 @@ public class ApiHandler {
 				}
 			} else {
 				Logger.log(EnumChatFormatting.GREEN + "Successfully fetched " + successes.get() + " player(s)'s stats.");
-				if (skips.get() != 0) {
-					Logger.log(EnumChatFormatting.GREEN + "(Skipped " + skips + " bots/obfuscated names)");
+				if (finalSkips != 0) {
+					Logger.log(EnumChatFormatting.GREEN + "(Skipped " + finalSkips + " bots/obfuscated names)");
 				}
 			}
 		}).start();
 	}
 
-	private static String getStatsOfPlayer(NetworkPlayerInfo info) {
-		// Avoid getting stats of bots and obfuscated players
-		if (info.getGameProfile().getName().startsWith("§k") || Objects.equals(info.getPlayerTeam().getTeamName(), "§fa999-76d80d5f")) {
-			return "Skipped";
-		}
-
-		String uuid = info.getGameProfile().getId().toString();
-
+	private static Map<StatKey, String> getStatsOfPlayer(UUID uuid) throws IOException, RuntimeException {
 		URL url;
-		try {
-			if (config.getInstance().apiData.developerMode) {
-				url = new URL(HYPIXEL_API + "?uuid=" + uuid);
-			} else {
-				url = new URL(PROXY_API + "?uuid=" + uuid);
-			}
-		} catch (MalformedURLException e) {
-			System.err.println("Error creating URL from either " + HYPIXEL_API + " or " + PROXY_API + ": " + e);
-
-			return "Error resolving API URL";
+		if (config.getInstance().apiData.developerMode) {
+			url = new URL(HYPIXEL_API + "?uuid=" + uuid.toString());
+		} else {
+			url = new URL(PROXY_API + "?uuid=" + uuid.toString());
 		}
 
 		// Fetch from API
 		HttpURLConnection conn;
 		boolean requestFailed = false;
-		try {
-			conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-			conn.setConnectTimeout(5000);
-			conn.setReadTimeout(5000);
-			if (config.getInstance().apiData.developerMode) {
-				conn.setRequestProperty("API-Key", config.getInstance().apiData.apiKey);
-			} else {
-				// Make CloudFlare allow the request
-				conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
-			}
+		conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		conn.setConnectTimeout(5000);
+		conn.setReadTimeout(5000);
+		if (config.getInstance().apiData.developerMode) {
+			conn.setRequestProperty("API-Key", config.getInstance().apiData.apiKey);
+		} else {
+			// Make CloudFlare allow the request
+			conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+		}
 
-			int responseCode = conn.getResponseCode();
-			if (responseCode != 200) {
-				System.err.println("Request failed with status: " + responseCode);
-				if (!(responseCode == 400 || responseCode == 403 || responseCode == 429)) {
-					return "Unexpected response code " + responseCode + ".";
-				}
-				requestFailed = true;
+		int responseCode = conn.getResponseCode();
+		if (responseCode != 200) {
+			System.err.println("Request failed with status: " + responseCode);
+			if (!(responseCode == 400 || responseCode == 403 || responseCode == 429)) {
+				throw new RuntimeException("Unexpected response code " + responseCode + ".");
 			}
-		} catch (IOException e) {
-			if (config.getInstance().apiData.developerMode) {
-				System.err.println("Error connecting to the Hypixel API: " + e);
-				return "Error connecting to the Hypixel API. The Hypixel API may be down";
-			}
-			System.err.println("Error connecting to the proxy: " + e);
-			return "Error connecting to the proxy. The proxy may be down. If you are a developer, try using Developer Mode if this issue persists.";
+			requestFailed = true;
 		}
 
 		InputStream inputStream;
-		try {
-			inputStream = requestFailed
-					? conn.getErrorStream()
-					: conn.getInputStream();
-		} catch (IOException e) {
-			System.err.println("Error getting input stream: " + e);
-			conn.disconnect();
-			return "Error getting input stream.";
-		}
+		inputStream = requestFailed
+				? conn.getErrorStream()
+				: conn.getInputStream();
 
 		StringBuilder response = new StringBuilder();
 		try (BufferedReader in = new BufferedReader(new InputStreamReader(inputStream))) {
@@ -200,14 +170,10 @@ public class ApiHandler {
 			while ((line = in.readLine()) != null) response.append(line);
 		} catch (IOException e) {
 			System.err.println("Error reading input stream: " + e);
-			return "Error reading the API's response.";
+			throw new IOException("Error reading the API's response.");
 		} finally {
 			conn.disconnect();
-			try {
-				inputStream.close();
-			} catch (IOException e) {
-				System.err.println("Error closing input stream: " + e);
-			}
+			inputStream.close();
 		}
 
 		JSONObject data = new JSONObject(response.toString());
@@ -218,63 +184,50 @@ public class ApiHandler {
 			System.err.println("Hypixel API request failed. Cause: " + cause);
 			if (Objects.equals(cause, "Invalid API key")) {
 				if (!config.getInstance().apiData.developerMode) {
-					return "The proxy's API key is invalid. " +
+					throw new RuntimeException("The proxy's API key is invalid. " +
 							"Open an issue on GitHub (if there isn't one already) and we'll update the key as soon as we can. " +
-							"In the meantime, if you are a developer, you can try using Developer Mode with your own API key.";
+							"In the meantime, if you are a developer, you can try using Developer Mode with your own API key.");
 				}
 				API_KEY_INVALID = true;
 				STORED_INVALID_KEY = config.getInstance().apiData.apiKey;
 			}
-			return "Cause: " + cause + ".";
-		} else if (Objects.equals(success, "???")) {
+			throw new RuntimeException("Cause: " + cause + ".");
+		} else if (success == null) {
 			System.err.println("Unexpected response from server: " + data);
-			return "Unexpected response from server.";
+			throw new RuntimeException("Unexpected response from server.");
 		}
+
+		Map<StatKey, String> stats = new HashMap<>();
 
 		// Nick detection
-		boolean nicked = false;
 		String player = parseJSON(data, "player");
-		if (Objects.equals(player, "???")) {
-			// TODO: Query Mojang API to see if the player exists rather than assuming they are nicked even though they may have never logged onto Hypixel
-			nicked = true;
+		if (player == null) {
+			stats.put(StatKey.IS_NICKED, "true");
+			return stats;
+		} else {
+			stats.put(StatKey.IS_NICKED, "false");
 		}
 
-		String bedwarsLevel, finalKills, finalDeaths, fkdr, winstreak, wins, losses, wlr, skwinstreak, kills, deaths, kdr, custom1, custom2, custom3;
-		bedwarsLevel = fkdr = winstreak = wins = losses = wlr = skwinstreak = kills = deaths = kdr = custom1 = custom2 = custom3 = "???";
+		JSONObject playerData = new JSONObject(player);
+		stats.put(StatKey.BEDWARS_LEVEL, parseJSON(playerData, "achievements/bedwars_level"));
+		stats.put(StatKey.BEDWARS_FINAL_KILLS, parseJSON(playerData, "stats/Bedwars/final_kills_bedwars"));
+		stats.put(StatKey.BEDWARS_FINAL_DEATHS, parseJSON(playerData, "stats/Bedwars/final_deaths_bedwars"));
+		stats.put(StatKey.BEDWARS_WINSTREAK, parseJSON(playerData, "stats/Bedwars/winstreak"));
+		stats.put(StatKey.BEDWARS_WINS, parseJSON(playerData, "stats/Bedwars/wins_bedwars"));
+		stats.put(StatKey.BEDWARS_LOSSES, parseJSON(playerData, "stats/Bedwars/losses_bedwars"));
+		stats.put(StatKey.SKYWARS_WINSTREAK, parseJSON(playerData, "stats/SkyWars/win_streak"));
+		stats.put(StatKey.SKYWARS_KILLS, parseJSON(playerData, "stats/SkyWars/kills"));
+		stats.put(StatKey.SKYWARS_DEATHS, parseJSON(playerData, "stats/SkyWars/deaths"));
+		stats.put(StatKey.CUSTOM_1, parseJSON(playerData, config.getInstance().statsSettings.custom.one.path));
+		stats.put(StatKey.CUSTOM_2, parseJSON(playerData, config.getInstance().statsSettings.custom.two.path));
+		stats.put(StatKey.CUSTOM_3, parseJSON(playerData, config.getInstance().statsSettings.custom.three.path));
 
-		if (!nicked) {
-			JSONObject playerData = new JSONObject(player);
-			bedwarsLevel = parseJSON(playerData, "achievements/bedwars_level");
-			finalKills = parseJSON(playerData, "stats/Bedwars/final_kills_bedwars");
-			finalDeaths = parseJSON(playerData, "stats/Bedwars/final_deaths_bedwars");
-			winstreak = parseJSON(playerData, "stats/Bedwars/winstreak");
-			wins = parseJSON(playerData, "stats/Bedwars/wins_bedwars");
-			losses = parseJSON(playerData, "stats/Bedwars/losses_bedwars");
-			skwinstreak = parseJSON(playerData, "stats/SkyWars/win_streak");
-			kills = parseJSON(playerData, "stats/SkyWars/kills");
-			deaths = parseJSON(playerData, "stats/SkyWars/deaths");
-			custom1 = parseJSON(playerData, config.getInstance().statsSettings.custom.custom1.path);
-			custom2 = parseJSON(playerData, config.getInstance().statsSettings.custom.custom2.path);
-			custom3 = parseJSON(playerData, config.getInstance().statsSettings.custom.custom3.path);
+		stats.put(StatKey.BEDWARS_FKDR, getRatio(stats.get(StatKey.BEDWARS_FINAL_KILLS), stats.get(StatKey.BEDWARS_FINAL_DEATHS)));
+		stats.put(StatKey.BEDWARS_WLR, getRatio(stats.get(StatKey.BEDWARS_WINS), stats.get(StatKey.BEDWARS_LOSSES)));
+		stats.put(StatKey.SKYWARS_KDR, getRatio(stats.get(StatKey.SKYWARS_KILLS), stats.get(StatKey.SKYWARS_DEATHS)));
 
-			fkdr = getRatio(finalKills, finalDeaths);
-			wlr = getRatio(wins, losses);
-			kdr = getRatio(kills, deaths);
-		}
-
-		Map<String, ChatComponentText> playerStats = new HashMap<>();
-		playerStats.put("level", DataFormatter.formatBedwarsLevel(bedwarsLevel));
-		playerStats.put("fkdr", DataFormatter.formatFkdr(fkdr));
-		playerStats.put("winstreak", DataFormatter.formatWs(winstreak));
-		playerStats.put("wlr", DataFormatter.formatWlr(wlr));
-		playerStats.put("skwinstreak", DataFormatter.formatWs(skwinstreak));
-		playerStats.put("kdr", DataFormatter.formatFkdr(kdr));
-		playerStats.put("custom1", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.RED + "-" + custom1 + "-"));
-		playerStats.put("custom2", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.GREEN + "~" + custom2 + "~"));
-		playerStats.put("custom3", new ChatComponentText(EnumChatFormatting.RESET + " " + EnumChatFormatting.BLUE + "=" + custom3 + "="));
-
-		STATS.put(uuid, playerStats);
-		return null;
+		DataFormatter.prettifyStats(stats);
+		return stats;
 	}
 
 	private static String parseJSON(JSONObject data, String path) {
@@ -283,14 +236,14 @@ public class ApiHandler {
 
 		for (String s : paths) {
 			if (!current.has(s)) {
-				return "???";
+				return null;
 			}
 			Object value = current.get(s);
 
 			if (value instanceof JSONObject) {
 				current = (JSONObject) value;
 			} else if (value == JSONObject.NULL) {
-				return "???";
+				return null;
 			} else {
 				return value.toString();
 			}
@@ -300,10 +253,10 @@ public class ApiHandler {
 	}
 
 	private static String getRatio(String x, String y) {
-		if (Objects.equals(x, "???")) {
+		if (x == null) {
 			x = "0";
 		}
-		if (Objects.equals(y, "???")) {
+		if (y == null) {
 			y = "0";
 		}
 		if (Objects.equals(y, "0")) { // avoid division by zero error
