@@ -32,6 +32,7 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
@@ -128,12 +129,20 @@ public class ApiHandler {
 		}).start();
 	}
 
-	private static Map<StatKey, String> getStatsOfPlayer(UUID uuid) throws IOException, RuntimeException {
+	public static Map<StatKey, String> getStatsOfPlayer(String name) throws IOException, RuntimeException {
+        return queryWithArgs("?name=" + name);
+	}
+
+	public static Map<StatKey, String> getStatsOfPlayer(UUID uuid) throws IOException, RuntimeException {
+		return queryWithArgs("?uuid=" + uuid.toString());
+	}
+
+	private static Map<StatKey, String> queryWithArgs(String args) throws IOException, RuntimeException {
 		URL url;
 		if (config.getInstance().apiData.developerMode) {
-			url = new URL(HYPIXEL_API + "?uuid=" + uuid.toString());
+			url = new URL(HYPIXEL_API + args);
 		} else {
-			url = new URL(PROXY_API + "?uuid=" + uuid.toString());
+			url = new URL(PROXY_API + args);
 		}
 
 		// Fetch from API

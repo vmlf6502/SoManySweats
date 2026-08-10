@@ -178,6 +178,7 @@ if (isLunar) {
     val homeDir: String? = System.getProperty("user.home")
     tasks.register<Copy>("copyJar") {
         from(tasks.shadowJar)
+        rename { "SoManySweats-$version.jar" }
         into("$homeDir/.lunarclient/offline/multiver/somanysweats")
     }
 }

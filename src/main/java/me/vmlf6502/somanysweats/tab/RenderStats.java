@@ -21,7 +21,7 @@ public class RenderStats {
         }
     }
 
-    static @NotNull ArrayList<StatKey> getStatsShown() {
+    public static @NotNull ArrayList<StatKey> getStatsShown() {
         ArrayList<StatKey> statsShown = new ArrayList<>();
 
         // BEDWARS

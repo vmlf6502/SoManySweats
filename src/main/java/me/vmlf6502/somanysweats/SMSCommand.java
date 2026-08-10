@@ -20,11 +20,19 @@
 package me.vmlf6502.somanysweats;
 
 import me.vmlf6502.somanysweats.events.TriggerOpenConfig;
+import me.vmlf6502.somanysweats.tab.RenderStats;
 import me.vmlf6502.somanysweats.util.ApiHandler;
 import me.vmlf6502.somanysweats.util.Logger;
+import me.vmlf6502.somanysweats.util.StatKey;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
 
 import static me.vmlf6502.somanysweats.SoManySweats.STATS;
 
@@ -40,9 +48,7 @@ public class SMSCommand extends CommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender sender) {
-		return null;
-	}
+	public String getCommandUsage(ICommandSender sender) { return null; }
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
@@ -50,28 +56,37 @@ public class SMSCommand extends CommandBase {
 		if (args.length == 0 || args[0].equals("settings")) {
 			TriggerOpenConfig.triggerConfig = true;
 		} else if (args[0].equals("fetch")) {
-			ApiHandler.fetchPlayerStats();
+			if (args.length < 2) {
+				ApiHandler.fetchPlayerStats();
+			} else {
+				new Thread(() -> {
+					try {
+						Map<StatKey, String> stats = ApiHandler.getStatsOfPlayer(args[1]);
+						if (Objects.equals(stats.get(StatKey.IS_NICKED), "true")) {
+							Logger.log(EnumChatFormatting.GRAY + "Player " + EnumChatFormatting.GOLD + args[1] + EnumChatFormatting.GRAY + " not found.");
+							return;
+						}
+						Logger.log(EnumChatFormatting.GOLD + args[1] + "'s Stats");
+						for (StatKey key : RenderStats.getStatsShown()) {
+							Logger.log(EnumChatFormatting.GRAY + " - " + key.name() + ": " + EnumChatFormatting.WHITE + stats.get(key));
+						}
+					} catch (Exception e) {
+						Logger.log(EnumChatFormatting.RED + "Failed to fetch " + EnumChatFormatting.GOLD + args[1] + EnumChatFormatting.RED + "'s stats.");
+						Logger.log(EnumChatFormatting.RED + e.getMessage());
+						System.out.println(Arrays.toString(e.getStackTrace()));
+					}
+				}).start();
+            }
 		} else if (args[0].equals("clear")) {
 			STATS.clear();
 			Logger.log(EnumChatFormatting.GREEN + "Successfully cleared stats.");
+		} else {
+			sender.addChatMessage(new ChatComponentText(
+				"/sms - Opens a GUI where you can configure your SoManySweats settings.\n" +
+						"/sms fetch - Fetch the stats of the players in your game.\n" +
+						"/sms clear - Clear the local stats cache so that you can request them from the API again."
+			));
 		}
-//		} else {
-//			Scoreboard scoreboard = Minecraft.getMinecraft().theWorld.getScoreboard();
-//			ScoreObjective objective = scoreboard.getObjectiveInDisplaySlot(1);
-//
-//			if (objective != null) {
-//				Collection<Score> scores = scoreboard.getSortedScores(objective);
-//				List<Score> scoreList = new ArrayList<>(scores);
-//				Collections.reverse(scoreList); // top to bottom order
-//
-//
-//				for (Score score : scoreList) {
-//					String playerName = score.getPlayerName();
-//
-//					System.out.println(playerName);
-//				}
-//			}
-//		}
 	}
 
 
