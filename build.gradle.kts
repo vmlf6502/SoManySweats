@@ -10,7 +10,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-version = "0.3.3"
+version = "0.3.4"
 
 // -Pprofile=lunar to build for Lunar Client
 val buildProfile = project.findProperty("profile")?.toString() ?: "standalone"
